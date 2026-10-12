@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body { background: #eef0f3; }
+@media print {
+  body { background: #fff; }
+  @page { size: A4; margin: 10mm; }
+}
