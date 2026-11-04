@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import * as XLSX from "xlsx";
 import { OWNER } from "./config";
 
-
 const DEFAULTS = {
   company: "Your Company Name",
   tagline: "Quality Welding Works",
@@ -39,6 +38,15 @@ function load() {
     if (x) s = { ...DEFAULTS, ...x, types: { ...DEFAULTS.types, ...x.types } };
   } catch {}
   const q = new URLSearchParams(location.search);
+  // new full link
+  try {
+    const c = q.get("s");
+    if (c) {
+      const x = JSON.parse(decodeURIComponent(escape(atob(c))));
+      s = { ...s, ...x, types: { ...s.types, ...(x.types || {}) } };
+    }
+  } catch {}
+  // old style links still work
   ["company", "tagline", "address", "phone", "gstin", "color"].forEach(
     (k) => q.get(k) && (s = { ...s, [k]: q.get(k) }),
   );
@@ -288,19 +296,20 @@ export default function App() {
   };
 
   const copyLink = () => {
-    const p = new URLSearchParams();
-    ["company", "tagline", "address", "phone", "gstin", "color"].forEach(
-      (k) => s[k] && p.set(k, s[k]),
-    );
-    if (s.logo && !s.logo.startsWith("data:"))
-      p.set("logo", s.logo.replace("/logos/", ""));
-    const url = location.origin + "/?" + p.toString();
+    const { logo, wmImg, ...rest } = s;
+    const data = { ...rest };
+    if (logo && !logo.startsWith("data:")) data.logo = logo;
+    const code = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+    const url =
+      location.origin +
+      location.pathname +
+      "?app=bill&s=" +
+      encodeURIComponent(code);
     navigator.clipboard?.writeText(url);
     alert(
-      "Demo link copied:\n" +
-        url +
-        (s.logo.startsWith("data:")
-          ? "\n\nNote: uploaded logo is not in the link. Put the logo file in public/logos/ and use ?logo=filename.png"
+      "Link copied! Paste it in WhatsApp and send to your customer.\n\nIt opens Bill, Quotation, Delivery Challan and Accounts with this business name, colour and details." +
+        (logo && logo.startsWith("data:")
+          ? '\n\nNote: an uploaded logo is not inside the link. Put the logo file in public/logos/ and set it in DEFAULTS (logo: "/logos/name.png").'
           : ""),
     );
   };
@@ -764,12 +773,20 @@ export default function App() {
             <span className="text-xs text-slate-400">· Demo</span>
             <div className="ml-auto flex gap-2">
               {unlocked && (
-                <button
-                  onClick={lock}
-                  className="rounded bg-slate-700 px-3 py-2 text-xs"
-                >
-                  🔒 Lock
-                </button>
+                <>
+                  <button
+                    onClick={copyLink}
+                    className="rounded bg-emerald-500 px-3 py-2 text-xs font-semibold"
+                  >
+                    🔗 Share
+                  </button>
+                  <button
+                    onClick={lock}
+                    className="rounded bg-slate-700 px-3 py-2 text-xs"
+                  >
+                    🔒 Lock
+                  </button>
+                </>
               )}
               <button
                 onClick={tryOpenSettings}
