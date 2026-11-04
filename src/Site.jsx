@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { OWNER } from "./config";
+import { sitePresets } from "./presets";
 
 /* ========== STARTING DETAILS (you can change all of this inside the website) ========== */
 const DEFAULT = {
@@ -27,7 +28,9 @@ const DEFAULT = {
   ],
 };
 
-const isShared = new URLSearchParams(location.search).has("d");
+const slug = location.pathname.split("/")[2];
+const isShared =
+  new URLSearchParams(location.search).has("d") || !!sitePresets[slug];
 
 function load() {
   let d = DEFAULT;
@@ -35,6 +38,7 @@ function load() {
     const x = JSON.parse(localStorage.getItem("site-data"));
     if (x) d = { ...DEFAULT, ...x };
   } catch {}
+  if (sitePresets[slug]) d = { ...d, ...sitePresets[slug] };
   try {
     const q = new URLSearchParams(location.search).get("d");
     if (q) d = { ...d, ...JSON.parse(decodeURIComponent(escape(atob(q)))) };

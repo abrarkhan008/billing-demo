@@ -6,18 +6,23 @@ import "./index.css";
 
 /*
   Which page opens:
-    yoursite.com/             -> menu (choose billing or website)
-    yoursite.com/?app=bill    -> billing demo
-    yoursite.com/?app=site    -> website demo
-  Old billing links (?company=...) still open billing.
-  Website share links (?d=...) still open the website.
+    yoursite.com/              -> menu
+    yoursite.com/bill/priya    -> billing demo with Priya's details (from presets.js)
+    yoursite.com/site/priya    -> website demo with Priya's details (from presets.js)
+    yoursite.com/bill          -> billing demo (default details)
+    yoursite.com/site          -> website demo (default details)
+  Old links (?app=bill, ?s=..., ?d=..., ?company=...) still work.
 */
 const q = new URLSearchParams(location.search);
+const first = location.pathname.split("/").filter(Boolean)[0];
 const which =
-  q.get("app") || (q.has("d") ? "site" : q.has("company") ? "bill" : "menu");
+  first === "bill" || first === "site"
+    ? first
+    : q.get("app") ||
+      (q.has("d") ? "site" : q.has("company") || q.has("s") ? "bill" : "menu");
 
 function Menu() {
-  const base = location.origin + location.pathname;
+  const base = location.origin;
   const Card = ({ href, icon, title, text }) => (
     <a
       href={href}
@@ -41,23 +46,23 @@ function Menu() {
           Tap one to try it. Everything works on your phone.
         </p>
         <Card
-          href="?app=bill"
+          href="/bill"
           icon="🧾"
           title="Billing & Accounts"
           text="Bills, quotations, delivery challan, cash in/out. Download PDF and Excel."
         />
         <Card
-          href="?app=site"
+          href="/site"
           icon="🌸"
           title="Business Website"
           text="Beautiful website for mehendi, makeup, salon and more. With photos, map, Instagram and WhatsApp."
         />
         <div className="rounded-xl bg-slate-800 p-4 text-xs text-slate-300">
           <div className="mb-1 font-semibold text-white">
-            Links to send customers
+            Link format for customers
           </div>
-          <div className="break-all">Billing: {base}?app=bill</div>
-          <div className="mt-1 break-all">Website: {base}?app=site</div>
+          <div className="break-all">{base}/bill/customername</div>
+          <div className="mt-1 break-all">{base}/site/customername</div>
         </div>
       </div>
     </div>

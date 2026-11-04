@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import * as XLSX from "xlsx";
 import { OWNER } from "./config";
+import { billPresets } from "./presets";
 
 const DEFAULTS = {
   company: "Your Company Name",
@@ -38,6 +39,13 @@ function load() {
     if (x) s = { ...DEFAULTS, ...x, types: { ...DEFAULTS.types, ...x.types } };
   } catch {}
   const q = new URLSearchParams(location.search);
+  const slug = location.pathname.split("/")[2];
+  if (billPresets[slug])
+    s = {
+      ...s,
+      ...billPresets[slug],
+      types: { ...s.types, ...(billPresets[slug].types || {}) },
+    };
   // new full link
   try {
     const c = q.get("s");
