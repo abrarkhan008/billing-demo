@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import * as XLSX from "xlsx";
 import { OWNER } from "./config";
 import { billPresets } from "./presets";
+import { createShare, LinkManager, ImageInput, Letterhead } from "./extras";
 
 const DEFAULTS = {
   company: "Your Company Name",
@@ -32,7 +33,7 @@ const DEFAULTS = {
   },
 };
 
-function load() {
+function load(shared) {
   let s = DEFAULTS;
   try {
     const x = JSON.parse(localStorage.getItem("bill-settings"));
@@ -59,6 +60,8 @@ function load() {
     (k) => q.get(k) && (s = { ...s, [k]: q.get(k) }),
   );
   if (q.get("logo")) s = { ...s, logo: "/logos/" + q.get("logo") };
+  if (shared)
+    s = { ...s, ...shared, types: { ...s.types, ...(shared.types || {}) } };
   return s;
 }
 
@@ -197,8 +200,8 @@ function Sketch({ onSave }) {
 }
 
 /* ================= MAIN APP ================= */
-export default function App() {
-  const [s, setS] = useState(load);
+export default function App({ shared }) {
+  const [s, setS] = useState(() => load(shared));
   const [view, setView] = useState("doc"); // doc | acc
   const [preview, setPreview] = useState(false);
   const [open, setOpen] = useState(false); // settings drawer
@@ -303,25 +306,36 @@ export default function App() {
     e.target.value = "";
   };
 
-  const copyLink = () => {
-    const { logo, wmImg, ...rest } = s;
-    const data = { ...rest };
-    if (logo && !logo.startsWith("data:")) data.logo = logo;
-    const code = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-    const url =
-      location.origin +
-      location.pathname +
-      "?app=bill&s=" +
-      encodeURIComponent(code);
-    navigator.clipboard?.writeText(url);
-    alert(
-      "Link copied! Paste it in WhatsApp and send to your customer.\n\nIt opens Bill, Quotation, Delivery Challan and Accounts with this business name, colour and details." +
-        (logo && logo.startsWith("data:")
-          ? '\n\nNote: an uploaded logo is not inside the link. Put the logo file in public/logos/ and set it in DEFAULTS (logo: "/logos/name.png").'
-          : ""),
-    );
-  };
+  // const copyLink = () => {
 
+  //   const { logo, wmImg, ...rest } = s;
+  //   const data = { ...rest };
+  //   if (logo && !logo.startsWith("data:")) data.logo = logo;
+  //   const code = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  //   const url =
+  //     location.origin +
+  //     location.pathname +
+  //     "?app=bill&s=" +
+  //     encodeURIComponent(code);
+  //   navigator.clipboard?.writeText(url);
+  //   alert(
+  //     "Link copied! Paste it in WhatsApp and send to your customer.\n\nIt opens Bill, Quotation, Delivery Challan and Accounts with this business name, colour and details." +
+  //       (logo && logo.startsWith("data:")
+  //         ? '\n\nNote: an uploaded logo is not inside the link. Put the logo file in public/logos/ and set it in DEFAULTS (logo: "/logos/name.png").'
+  //         : ""),
+  //   );
+  // };
+  const copyLink = async () => {
+    try {
+      const url = await createShare("bill", "Customer", s);
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {}
+      alert("Short link copied!\n\n" + url);
+    } catch {
+      alert("Could not create link. Check Supabase keys in extras.jsx");
+    }
+  };
   const changePass = () => {
     const n = prompt("Enter new password (min 4 characters):");
     if (n && n.length >= 4) {
@@ -497,7 +511,7 @@ export default function App() {
 
             <div className="relative z-10">
               {/* ---------- letterhead ---------- */}
-              <div
+              {/* <div
                 className="flex items-center gap-4 border-b-4 pb-4"
                 style={{ borderColor: s.color }}
               >
@@ -546,7 +560,8 @@ export default function App() {
                     {s.gstin && ` | GSTIN: ${s.gstin}`}
                   </div>
                 </div>
-              </div>
+              </div> */}
+              <Letterhead s={s} radius={radius} initials={initials} />
 
               {isDoc ? (
                 <>
@@ -774,7 +789,10 @@ export default function App() {
       `}</style>
 
       {/* ---------- TOP BAR ---------- */}
-      <div className="print:hidden sticky top-0 z-20 bg-slate-900 text-white shadow">
+      <div
+        className="print:hidden sticky top-0 z-20 text-white shadow-lg"
+        style={{ background: `linear-gradient(135deg, ${s.color}, #0f172a)` }}
+      >
         <div className="mx-auto max-w-5xl p-2">
           <div className="flex items-center gap-2">
             <b className="truncate text-sm sm:text-base">{s.company}</b>
@@ -796,12 +814,14 @@ export default function App() {
                   </button>
                 </>
               )}
-              <button
-                onClick={tryOpenSettings}
-                className="rounded bg-amber-400 px-3 py-2 text-xs font-semibold text-slate-900"
-              >
-                ⚙ Settings
-              </button>
+              {!shared && (
+                <button
+                  onClick={tryOpenSettings}
+                  className="rounded bg-amber-400 px-3 py-2 text-xs font-semibold text-slate-900"
+                >
+                  ⚙ Settings
+                </button>
+              )}
             </div>
           </div>
           <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
@@ -925,12 +945,11 @@ export default function App() {
             </div>
 
             <H>Logo</H>
-            <Field label="Upload logo">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={onLogo}
-                className="text-xs"
+            <Field label="Logo (paste or upload)">
+              <ImageInput
+                onFile={(f) =>
+                  readImage(f, 400, "image/png", (d) => set("logo", d))
+                }
               />
             </Field>
             {s.logo && (
@@ -994,12 +1013,11 @@ export default function App() {
                   </Field>
                 ) : (
                   <>
-                    <Field label="Upload watermark image">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={onWm}
-                        className="text-xs"
+                    <Field label="Watermark image (paste or upload)">
+                      <ImageInput
+                        onFile={(f) =>
+                          readImage(f, 700, "image/png", (d) => set("wmImg", d))
+                        }
                       />
                     </Field>
                     {s.wmImg && (
@@ -1137,13 +1155,13 @@ export default function App() {
             ))}
 
             <H>Drawing / Plan (for this document)</H>
-            <Field label="Upload plan / drawing photos">
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={onPlan}
-                className="text-xs"
+            <Field label="Plan / drawing (paste or upload)">
+              <ImageInput
+                onFile={(f) =>
+                  readImage(f, 1000, "image/jpeg", (d) =>
+                    setPlans((p) => [...p, d]),
+                  )
+                }
               />
             </Field>
             <p className="text-xs text-slate-500">Or draw with your finger:</p>
@@ -1175,12 +1193,8 @@ export default function App() {
             >
               Change password
             </button>
-            <button
-              onClick={copyLink}
-              className="w-full rounded bg-slate-900 py-2 text-sm text-white"
-            >
-              Copy demo link for customer
-            </button>
+            <H>Customer links</H>
+            <LinkManager app="bill" getData={() => s} />
             <button
               onClick={() => {
                 if (confirm("Delete ALL settings and accounts data?")) {
@@ -1234,7 +1248,7 @@ export default function App() {
 
               <div className="relative z-10">
                 {/* header */}
-                <div
+                {/* <div
                   className="flex items-center gap-3 border-b-4 pb-4"
                   style={{ borderColor: s.color }}
                 >
@@ -1281,8 +1295,8 @@ export default function App() {
                       {s.gstin && ` · GSTIN: ${s.gstin}`}
                     </div>
                   </div>
-                </div>
-
+                </div> */}
+                <Letterhead s={s} radius={radius} initials={initials} />
                 {/* title + no/date */}
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
                   <div

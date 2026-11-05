@@ -5,5 +5,5 @@ export const OWNER = {
   message: "Hi, I saw your demo billing website. I am interested.",
   offer:
     "I can build a billing / quotation / accounts website or Android app for your business at a reasonable price.",
-  password: "1234", // <-- CHANGE THIS. Your secret password for Settings (you can also change it inside Settings later)
+  password: "9448391116", // <-- CHANGE THIS. Your secret password for Settings (you can also change it inside Settings later)
 };

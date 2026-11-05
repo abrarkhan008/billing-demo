@@ -1,32 +1,32 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
-import Bill from "./App.jsx"; // billing / quotation / accounts demo
-import Site from "./Site.jsx"; // mehendi / makeup website demo
+import Bill from "./App.jsx";
+import Site from "./Site.jsx";
+import Shop from "./Shop.jsx";
+import { getShare } from "./extras.jsx";
 import "./index.css";
 
-/*
-  Which page opens:
-    yoursite.com/              -> menu
-    yoursite.com/bill/priya    -> billing demo with Priya's details (from presets.js)
-    yoursite.com/site/priya    -> website demo with Priya's details (from presets.js)
-    yoursite.com/bill          -> billing demo (default details)
-    yoursite.com/site          -> website demo (default details)
-  Old links (?app=bill, ?s=..., ?d=..., ?company=...) still work.
-*/
 const q = new URLSearchParams(location.search);
-const first = location.pathname.split("/").filter(Boolean)[0];
-const which =
-  first === "bill" || first === "site"
-    ? first
-    : q.get("app") ||
-      (q.has("d") ? "site" : q.has("company") || q.has("s") ? "bill" : "menu");
+const parts = location.pathname.split("/").filter(Boolean);
+const first = parts[0];
+const direct = ["bill", "site", "shop"].includes(first)
+  ? first
+  : q.get("app") ||
+    (q.has("d") ? "site" : q.has("company") || q.has("s") ? "bill" : "menu");
+
+function Center({ children }) {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-900 p-6 text-center text-white">
+      <div>{children}</div>
+    </div>
+  );
+}
 
 function Menu() {
-  const base = location.origin;
   const Card = ({ href, icon, title, text }) => (
     <a
       href={href}
-      className="block rounded-2xl bg-white p-6 text-center shadow-lg transition hover:scale-[1.02]"
+      className="block rounded-2xl bg-white p-6 text-center shadow-xl transition hover:scale-[1.02]"
     >
       <div className="text-5xl">{icon}</div>
       <div className="mt-3 text-xl font-bold text-slate-900">{title}</div>
@@ -37,9 +37,9 @@ function Menu() {
     </a>
   );
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-700 p-5">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 p-5">
       <div className="mx-auto max-w-md space-y-4 pt-8">
-        <h1 className="text-center text-2xl font-extrabold text-white">
+        <h1 className="text-center text-3xl font-extrabold text-white">
           Our Demo Apps
         </h1>
         <p className="text-center text-sm text-slate-300">
@@ -55,20 +55,52 @@ function Menu() {
           href="/site"
           icon="🌸"
           title="Business Website"
-          text="Beautiful website for mehendi, makeup, salon and more. With photos, map, Instagram and WhatsApp."
+          text="Beautiful website for mehendi, makeup, salon and more."
         />
-        <div className="rounded-xl bg-slate-800 p-4 text-xs text-slate-300">
-          <div className="mb-1 font-semibold text-white">
-            Link format for customers
-          </div>
-          <div className="break-all">{base}/bill/customername</div>
-          <div className="mt-1 break-all">{base}/site/customername</div>
-        </div>
+        <Card
+          href="/shop"
+          icon="🛒"
+          title="Online Shop"
+          text="Ecommerce store with cart and WhatsApp ordering."
+        />
       </div>
     </div>
   );
 }
 
-const Page = which === "bill" ? Bill : which === "site" ? Site : Menu;
+function Root() {
+  const isShort = first === "s";
+  const [st, setSt] = useState(isShort ? "loading" : "ok");
+  const [share, setShare] = useState(null);
 
-ReactDOM.createRoot(document.getElementById("root")).render(<Page />);
+  useEffect(() => {
+    if (!isShort) return;
+    getShare(parts[1])
+      .then((r) => {
+        if (r && r.active) {
+          setShare(r);
+          setSt("ok");
+        } else setSt("dead");
+      })
+      .catch(() => setSt("dead"));
+  }, []);
+
+  if (st === "loading") return <Center>Loading...</Center>;
+  if (st === "dead")
+    return (
+      <Center>
+        <div className="text-5xl">🔒</div>
+        <div className="mt-3 text-xl font-bold">
+          This link is no longer active
+        </div>
+        <p className="mt-1 text-sm text-slate-300">
+          Please contact the person who sent it.
+        </p>
+      </Center>
+    );
+  const which = share ? share.app : direct;
+  const Page = { bill: Bill, site: Site, shop: Shop }[which] || Menu;
+  return <Page shared={share?.data} />;
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Root />);

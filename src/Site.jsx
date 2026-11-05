@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { OWNER } from "./config";
 import { sitePresets } from "./presets";
+import {
+  createShare,
+  LinkManager,
+  ImageInput,
+  readImage as readImg,
+} from "./extras";
 
 /* ========== STARTING DETAILS (you can change all of this inside the website) ========== */
 const DEFAULT = {
@@ -28,24 +34,41 @@ const DEFAULT = {
   ],
 };
 
-const slug = location.pathname.split("/")[2];
-const isShared =
-  new URLSearchParams(location.search).has("d") || !!sitePresets[slug];
+// const slug = location.pathname.split("/")[2];
+// const isShared =
+//   new URLSearchParams(location.search).has("d") || !!sitePresets[slug];
 
-function load() {
+// function load() {
+//   let d = DEFAULT;
+//   try {
+//     const x = JSON.parse(localStorage.getItem("site-data"));
+//     if (x) d = { ...DEFAULT, ...x };
+//   } catch {}
+//   if (sitePresets[slug]) d = { ...d, ...sitePresets[slug] };
+//   try {
+//     const q = new URLSearchParams(location.search).get("d");
+//     if (q) d = { ...d, ...JSON.parse(decodeURIComponent(escape(atob(q)))) };
+//   } catch {}
+//   return d;
+// }
+const slug = location.pathname.split("/")[2];
+
+function load(shared) {
   let d = DEFAULT;
-  try {
-    const x = JSON.parse(localStorage.getItem("site-data"));
-    if (x) d = { ...DEFAULT, ...x };
-  } catch {}
+  if (!shared) {
+    try {
+      const x = JSON.parse(localStorage.getItem("site-data"));
+      if (x) d = { ...DEFAULT, ...x };
+    } catch {}
+  }
   if (sitePresets[slug]) d = { ...d, ...sitePresets[slug] };
   try {
     const q = new URLSearchParams(location.search).get("d");
     if (q) d = { ...d, ...JSON.parse(decodeURIComponent(escape(atob(q)))) };
   } catch {}
+  if (shared) d = { ...d, ...shared };
   return d;
 }
-
 // make photo smaller so phone storage does not fill up
 function readImage(file, max, cb) {
   const r = new FileReader();
@@ -76,8 +99,12 @@ const H = ({ children }) => (
   <h3 className="border-t pt-3 text-sm font-bold text-slate-800">{children}</h3>
 );
 
-export default function Site() {
-  const [d, setD] = useState(load);
+export default function Site({ shared }) {
+  const [d, setD] = useState(() => load(shared));
+  const isShared =
+    !!shared ||
+    new URLSearchParams(location.search).has("d") ||
+    !!sitePresets[slug];
   const [big, setBig] = useState(null);
   const [open, setOpen] = useState(false);
   const [askPass, setAskPass] = useState(false);
@@ -129,62 +156,75 @@ export default function Site() {
     } else alert("Wrong password");
   };
 
-  const onHero = (e) => {
-    const f = e.target.files[0];
-    if (f) readImage(f, 1400, (x) => set("hero", x));
-  };
-  const onGallery = (e) => {
-    const files = Array.from(e.target.files);
-    let next = [...d.gallery];
-    let left = files.length;
-    files.forEach((f) =>
-      readImage(f, 900, (x) => {
-        next = [...next, x];
-        if (--left === 0) set("gallery", next);
+  const addGallery = (f) =>
+    readImg(f, 900, "image/jpeg", (x) =>
+      setD((old) => {
+        const n = { ...old, gallery: [...old.gallery, x] };
+        try {
+          localStorage.setItem("site-data", JSON.stringify(n));
+        } catch {}
+        return n;
       }),
     );
-    e.target.value = "";
-  };
 
-  const copyLink = () => {
-    const { hero, gallery, ...text } = d;
-    const code = btoa(unescape(encodeURIComponent(JSON.stringify(text))));
-    const url =
-      location.origin + location.pathname + "?d=" + encodeURIComponent(code);
-    navigator.clipboard?.writeText(url);
-    alert(
-      "Link copied! Send it to your customer.\n\nNote: photos are NOT inside the link. Customer will see your text, colour, map, Instagram and WhatsApp. To show photos, open the website on this phone and give it to the customer.",
-    );
+  const copyLink = async () => {
+    try {
+      const url = await createShare("site", "Customer", d);
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {}
+      alert("Short link copied!\n\n" + url + "\n\nPhotos are included now.");
+    } catch {
+      alert("Could not create link. Check Supabase keys in extras.jsx");
+    }
   };
 
   return (
     <div
       className="min-h-screen bg-white text-slate-800"
-      style={{ fontFamily: "Georgia, serif" }}
+      style={{ fontFamily: "'Poppins', system-ui, sans-serif" }}
     >
       {/* HERO */}
       <section
-        className="relative flex min-h-[85vh] items-center justify-center bg-cover bg-center text-center text-white"
+        className="relative flex min-h-[90vh] items-center justify-center bg-cover bg-center text-center text-white"
         style={{
           backgroundImage: d.hero
             ? `url(${d.hero})`
-            : `linear-gradient(135deg, ${c}, #000)`,
+            : `linear-gradient(135deg, ${c}, ${c}99 55%, #1e1b4b)`,
         }}
       >
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="relative z-10 px-6">
-          <h1 className="text-4xl font-extrabold sm:text-6xl">{d.name}</h1>
-          <p className="mt-3 text-lg italic sm:text-2xl">{d.tagline}</p>
-          <a
-            href={wa}
-            className="mt-7 inline-block rounded-full px-8 py-3 font-semibold text-white shadow-lg"
-            style={{ background: c }}
-          >
-            Book Now on WhatsApp
-          </a>
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.6))",
+          }}
+        />
+        <div className="relative z-10 max-w-2xl px-6">
+          <span className="inline-block rounded-full bg-white/20 px-4 py-1 text-xs font-semibold tracking-widest backdrop-blur">
+            BOOK YOUR DATE TODAY
+          </span>
+          <h1 className="mt-4 text-4xl font-extrabold leading-tight sm:text-6xl">
+            {d.name}
+          </h1>
+          <p className="mt-3 text-lg font-light sm:text-2xl">{d.tagline}</p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <a
+              href={wa}
+              className="rounded-full px-8 py-3 font-semibold text-white shadow-xl"
+              style={{ background: c }}
+            >
+              Book on WhatsApp
+            </a>
+            <a
+              href="#work"
+              className="rounded-full border border-white/70 px-8 py-3 font-semibold backdrop-blur"
+            >
+              See Our Work
+            </a>
+          </div>
         </div>
       </section>
-
       {/* ABOUT */}
       <section className="mx-auto max-w-3xl px-6 py-12 text-center">
         <h2 className="text-2xl font-bold" style={{ color: c }}>
@@ -200,7 +240,10 @@ export default function Site() {
         </h2>
         <div className="mx-auto mt-6 grid max-w-5xl gap-4 sm:grid-cols-3">
           {d.services.map((s, i) => (
-            <div key={i} className="rounded-xl bg-white p-5 shadow">
+            <div
+              key={i}
+              className="rounded-2xl bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
+            >
               <div className="text-lg font-bold">{s.title}</div>
               <div className="mt-1 font-semibold" style={{ color: c }}>
                 {s.price}
@@ -212,7 +255,7 @@ export default function Site() {
       </section>
 
       {/* GALLERY */}
-      <section className="px-4 py-12">
+      <section id="work" className="px-4 py-12">
         <h2 className="text-center text-2xl font-bold" style={{ color: c }}>
           Our Work
         </h2>
@@ -494,11 +537,10 @@ export default function Site() {
             </Field>
 
             <H>Main photo (top of website)</H>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={onHero}
-              className="text-xs"
+            <ImageInput
+              onFile={(f) =>
+                readImg(f, 1400, "image/jpeg", (x) => set("hero", x))
+              }
             />
             {d.hero && (
               <button
@@ -510,13 +552,7 @@ export default function Site() {
             )}
 
             <H>Gallery photos</H>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={onGallery}
-              className="text-xs"
-            />
+            <ImageInput onFile={addGallery} />
             {d.gallery.length > 0 && (
               <div className="grid grid-cols-3 gap-2">
                 {d.gallery.map((p, i) => (
@@ -640,13 +676,8 @@ export default function Site() {
               + Add review
             </button>
 
-            <H>Share</H>
-            <button
-              onClick={copyLink}
-              className="w-full rounded bg-slate-900 py-2 text-sm text-white"
-            >
-              Copy link for customer
-            </button>
+            <H>Customer links</H>
+            <LinkManager app="site" getData={() => d} />
             <button
               onClick={() => {
                 if (confirm("Delete everything and start fresh?")) {
