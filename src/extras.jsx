@@ -291,3 +291,23 @@ export function Letterhead({ s, radius, initials }) {
     </div>
   );
 }
+/* ---------- restaurant orders (reuse the shares table) ---------- */
+export async function saveOrder(order) {
+  const id = newId();
+  const r = await api("", {
+    method: "POST",
+    headers: { Prefer: "return=minimal" },
+    body: JSON.stringify({ id, app: "order", label: "Table " + order.table, data: order, active: true }),
+  });
+  if (!r.ok) throw new Error("order failed");
+  return id;
+}
+export const getOrder = (id) => getShare(id);
+export async function listOrders(shop) {
+  const r = await api(
+    `?app=eq.order&data->>shop=eq.${encodeURIComponent(shop)}&select=id,label,data,created_at&order=created_at.desc&limit=40`,
+  );
+  return r.ok ? r.json() : [];
+}
+export const setOrderStatus = (id, data) =>
+  api(`?id=eq.${id}`, { method: "PATCH", body: JSON.stringify({ data }) });

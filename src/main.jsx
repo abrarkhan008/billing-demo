@@ -3,66 +3,131 @@ import ReactDOM from "react-dom/client";
 import Bill from "./App.jsx";
 import Site from "./Site.jsx";
 import Shop from "./Shop.jsx";
+import Dine from "./Dine.jsx";
+import { OWNER } from "./config";
 import { getShare } from "./extras.jsx";
 import "./index.css";
 
 const q = new URLSearchParams(location.search);
 const parts = location.pathname.split("/").filter(Boolean);
 const first = parts[0];
-const direct = ["bill", "site", "shop"].includes(first)
+const direct = ["bill", "site", "shop", "dine"].includes(first)
   ? first
   : q.get("app") ||
     (q.has("d") ? "site" : q.has("company") || q.has("s") ? "bill" : "menu");
 
 function Center({ children }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-900 p-6 text-center text-white">
+    <div className="flex min-h-screen items-center justify-center bg-neutral-950 p-6 text-center text-white">
       <div>{children}</div>
     </div>
   );
 }
 
+const GOLD = "#d4a24c";
+
 function Menu() {
-  const Card = ({ href, icon, title, text }) => (
+  const wa = `https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(OWNER.message)}`;
+  const Card = ({ href, icon, title, text, tags }) => (
     <a
       href={href}
-      className="block rounded-2xl bg-white p-6 text-center shadow-xl transition hover:scale-[1.02]"
+      className="group block rounded-3xl border border-neutral-800 bg-neutral-900 p-6 transition hover:-translate-y-1 hover:border-amber-500/50"
     >
-      <div className="text-5xl">{icon}</div>
-      <div className="mt-3 text-xl font-bold text-slate-900">{title}</div>
-      <p className="mt-1 text-sm text-slate-600">{text}</p>
-      <div className="mt-4 inline-block rounded-full bg-slate-900 px-6 py-2 text-sm font-semibold text-white">
-        Open demo
+      <div className="text-4xl">{icon}</div>
+      <div className="font-display mt-3 text-2xl font-bold text-white">
+        {title}
+      </div>
+      <p className="mt-1 text-sm text-neutral-400">{text}</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {tags.map((t) => (
+          <span
+            key={t}
+            className="rounded-full bg-neutral-800 px-3 py-1 text-[11px] text-neutral-300"
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+      <div className="mt-4 text-sm font-semibold" style={{ color: GOLD }}>
+        Try live demo →
       </div>
     </a>
   );
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800 p-5">
-      <div className="mx-auto max-w-md space-y-4 pt-8">
-        <h1 className="text-center text-3xl font-extrabold text-white">
-          Our Demo Apps
-        </h1>
-        <p className="text-center text-sm text-slate-300">
-          Tap one to try it. Everything works on your phone.
-        </p>
-        <Card
-          href="/bill"
-          icon="🧾"
-          title="Billing & Accounts"
-          text="Bills, quotations, delivery challan, cash in/out. Download PDF and Excel."
-        />
-        <Card
-          href="/site"
-          icon="🌸"
-          title="Business Website"
-          text="Beautiful website for mehendi, makeup, salon and more."
-        />
-        <Card
-          href="/shop"
-          icon="🛒"
-          title="Online Shop"
-          text="Ecommerce store with cart and WhatsApp ordering."
-        />
+    <div className="min-h-screen bg-neutral-950 px-5 pb-16 text-white">
+      <div className="mx-auto max-w-5xl">
+        <div className="pt-14 text-center">
+          <span
+            className="rounded-full border px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.25em]"
+            style={{ borderColor: GOLD + "66", color: GOLD }}
+          >
+            Digital tools for modern business
+          </span>
+          <h1 className="font-display mx-auto mt-5 max-w-2xl text-4xl font-bold leading-tight sm:text-6xl">
+            Make your business look{" "}
+            <span style={{ color: GOLD }}>world-class</span>
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-neutral-400">
+            Billing, websites, online shops and QR table ordering — branded with
+            your name, colours and logo. Works on any phone. No monthly
+            commission.
+          </p>
+          <a
+            href={wa}
+            className="mt-6 inline-block rounded-full px-8 py-3 font-bold text-black"
+            style={{ background: GOLD }}
+          >
+            Get a free demo with my business name
+          </a>
+        </div>
+
+        <div className="mt-12 grid gap-4 sm:grid-cols-2">
+          <Card
+            href="/dine"
+            icon="🍽️"
+            title="Restaurant QR Ordering"
+            text="Guests scan the table QR, order from their phone, and the kitchen sees it live."
+            tags={["QR per table", "Live kitchen screen", "Order tracking"]}
+          />
+          <Card
+            href="/bill"
+            icon="🧾"
+            title="Billing & Accounts"
+            text="Invoices, quotations, delivery challans and cash book. PDF and Excel in one tap."
+            tags={["GST / VAT / Sales tax", "PDF + Excel", "Your logo"]}
+          />
+          <Card
+            href="/site"
+            icon="🌐"
+            title="Business Website"
+            text="A beautiful booking website for salons, artists, clinics and studios."
+            tags={["Gallery", "WhatsApp booking", "Google Map"]}
+          />
+          <Card
+            href="/shop"
+            icon="🛍️"
+            title="Online Shop"
+            text="Catalogue with cart. Orders land straight in your WhatsApp."
+            tags={["Cart", "Offers", "No commission"]}
+          />
+        </div>
+
+        <div className="mt-12 grid grid-cols-3 gap-3 text-center text-xs text-neutral-400">
+          <div className="rounded-2xl bg-neutral-900 p-4">
+            ⚡<br />
+            Live in 48 hours
+          </div>
+          <div className="rounded-2xl bg-neutral-900 p-4">
+            🎨
+            <br />
+            Your brand, your colours
+          </div>
+          <div className="rounded-2xl bg-neutral-900 p-4">
+            🌍
+            <br />
+            Any currency, any country
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -93,13 +158,14 @@ function Root() {
         <div className="mt-3 text-xl font-bold">
           This link is no longer active
         </div>
-        <p className="mt-1 text-sm text-slate-300">
+        <p className="mt-1 text-sm text-neutral-400">
           Please contact the person who sent it.
         </p>
       </Center>
     );
   const which = share ? share.app : direct;
-  const Page = { bill: Bill, site: Site, shop: Shop }[which] || Menu;
+  const Page =
+    { bill: Bill, site: Site, shop: Shop, dine: Dine }[which] || Menu;
   return <Page shared={share?.data} />;
 }
 
