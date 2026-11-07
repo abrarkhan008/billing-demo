@@ -390,7 +390,18 @@ export default function App({ shared }) {
       .then(setQr)
       .catch(() => setQr(""));
   }, [payLink]);
-
+  // Preview/PDF: show the full A4 layout on phones (auto-shrinks to fit)
+  useEffect(() => {
+    let m = document.querySelector('meta[name="viewport"]');
+    if (!m) {
+      m = document.createElement("meta");
+      m.name = "viewport";
+      document.head.appendChild(m);
+    }
+    const normal = "width=device-width, initial-scale=1";
+    m.setAttribute("content", preview ? "width=800" : normal);
+    return () => m.setAttribute("content", normal);
+  }, [preview]);
   const cashIn = acc
     .filter((e) => e.kind === "in")
     .reduce((a, e) => a + e.amount, 0);
@@ -758,8 +769,8 @@ export default function App({ shared }) {
     const meta = (
       <div
         className={
-          "text-[0.92em] leading-relaxed text-slate-600 " +
-          (tpl === "classic" ? "text-center" : "text-right")
+          "w-full text-[0.92em] leading-relaxed text-slate-600 sm:w-auto " +
+          (tpl === "classic" ? "text-center" : "text-left sm:text-right")
         }
       >
         <div>
@@ -843,7 +854,7 @@ export default function App({ shared }) {
               <div
                 className="whitespace-nowrap font-black"
                 style={{
-                  fontSize: "clamp(40px,14vw,110px)",
+                  fontSize: "clamp(26px,9vw,90px)",
                   transform: "rotate(-30deg)",
                   color: s.color,
                 }}
@@ -870,11 +881,11 @@ export default function App({ shared }) {
                   "mt-7 flex flex-wrap gap-3 " +
                   (tpl === "classic"
                     ? "flex-col items-center text-center"
-                    : "items-end justify-between")
+                    : "flex-col items-start sm:flex-row sm:items-end sm:justify-between")
                 }
               >
                 <h2
-                  className="font-display text-[2.3em] font-bold leading-none tracking-wide"
+                  className="font-display text-[1.7em] font-bold leading-tight tracking-wide sm:text-[2.3em]"
                   style={{ color: ink }}
                 >
                   {T.title}
