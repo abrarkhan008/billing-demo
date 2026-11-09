@@ -1749,6 +1749,14 @@ export default function App({ shared }) {
             )}
 
             <H>Owner tools</H>
+                        <H>Owner tools</H>
+            <a
+              href="/msg"
+              className="block w-full rounded bg-slate-900 py-2 text-center text-sm font-semibold text-white"
+            >
+              ✉ Open message maker
+            </a>
+            
             <button
               onClick={changePass}
               className="w-full rounded border py-2 text-sm"

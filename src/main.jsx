@@ -6,6 +6,7 @@ import Shop from "./Shop.jsx";
 import Dine from "./Dine.jsx";
 import Cars from "./Cars.jsx";
 import Estate from "./Estate.jsx";
+import Messages from "./Messages.jsx";
 import { OWNER } from "./config";
 import { getShare } from "./extras.jsx";
 import "./index.css";
@@ -13,9 +14,15 @@ import "./index.css";
 const q = new URLSearchParams(location.search);
 const parts = location.pathname.split("/").filter(Boolean);
 const first = parts[0];
-const direct = ["bill", "site", "shop", "dine", "cars", "estate"].includes(
-  first,
-)
+const direct = [
+  "bill",
+  "site",
+  "shop",
+  "dine",
+  "cars",
+  "estate",
+  "msg",
+].includes(first)
   ? first
   : q.get("app") ||
     (q.has("d") ? "site" : q.has("company") || q.has("s") ? "bill" : "menu");
@@ -190,6 +197,7 @@ function Root() {
       dine: Dine,
       cars: Cars,
       estate: Estate,
+      msg: Messages,
     }[which] || Menu;
   return <Page shared={share?.data} />;
 }

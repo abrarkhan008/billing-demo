@@ -537,8 +537,16 @@ export default function Cars({ shared }) {
               </div>
             ))}
             <button className="w-full rounded border py-2 text-sm" onClick={() => set("reviews", [...d.reviews, { who: "", text: "" }])}>+ Add review</button>
-
+            <H>Owner tools</H>
+            <a
+              href="/msg"
+              className="block w-full rounded bg-slate-900 py-2 text-center text-sm font-semibold text-white"
+            >
+              ✉ Open message maker
+            </a>
+           
             <H>Customer links</H>
+            
             <LinkManager app="cars" getData={() => d} />
             <button
               onClick={() => { if (confirm("Delete everything and start fresh?")) { localStorage.removeItem("cars-data"); location.href = location.pathname; } }}
