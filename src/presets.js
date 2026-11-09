@@ -39,18 +39,43 @@ export const sitePresets = {
     insta: "priya_mehendi",
     address: "MG Road, Bengaluru",
     color: "#9d174d",
-    about: "10 years of experience in bridal, Arabic and Rajasthani mehendi. We come to your home.",
+    about:
+      "10 years of experience in bridal, Arabic and Rajasthani mehendi. We come to your home.",
     hero: "/images/priya/hero.jpg",
-    gallery: ["/images/priya/1.jpg", "/images/priya/2.jpg", "/images/priya/3.jpg"],
+    gallery: [
+      "/images/priya/1.jpg",
+      "/images/priya/2.jpg",
+      "/images/priya/3.jpg",
+    ],
     services: [
       { title: "Bridal", price: "₹3,000 onwards", text: "Full hands + legs" },
       { title: "Arabic", price: "₹500 onwards", text: "Quick and elegant" },
       { title: "Party", price: "₹300 onwards", text: "Festival and functions" },
     ],
-    steps: "Choose your design from the gallery\nMessage us on WhatsApp with your date\nWe confirm your booking\nEnjoy your beautiful look",
+    steps:
+      "Choose your design from the gallery\nMessage us on WhatsApp with your date\nWe confirm your booking\nEnjoy your beautiful look",
     reviews: [
       { who: "Anita", text: "Colour came out so dark!" },
       { who: "Sneha", text: "Very neat work and on time." },
     ],
+  },
+};
+export const carsPresets = {
+  kumar: {
+    name: "Kumar Motors",
+    phone: "9999999999",
+    whatsapp: "919999999999",
+    address: "Hosur Road, Bengaluru",
+    color: "#b45309",
+  },
+};
+export const estatePresets = {
+  suresh: {
+    name: "Suresh Realty",
+    agent: "Suresh Kumar",
+    phone: "9999999999",
+    whatsapp: "919999999999",
+    address: "Indiranagar, Bengaluru",
+    color: "#0e5a47",
   },
 };

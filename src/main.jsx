@@ -4,6 +4,8 @@ import Bill from "./App.jsx";
 import Site from "./Site.jsx";
 import Shop from "./Shop.jsx";
 import Dine from "./Dine.jsx";
+import Cars from "./Cars.jsx";
+import Estate from "./Estate.jsx";
 import { OWNER } from "./config";
 import { getShare } from "./extras.jsx";
 import "./index.css";
@@ -11,7 +13,9 @@ import "./index.css";
 const q = new URLSearchParams(location.search);
 const parts = location.pathname.split("/").filter(Boolean);
 const first = parts[0];
-const direct = ["bill", "site", "shop", "dine"].includes(first)
+const direct = ["bill", "site", "shop", "dine", "cars", "estate"].includes(
+  first,
+)
   ? first
   : q.get("app") ||
     (q.has("d") ? "site" : q.has("company") || q.has("s") ? "bill" : "menu");
@@ -110,7 +114,21 @@ function Menu() {
             text="Catalogue with cart. Orders land straight in your WhatsApp."
             tags={["Cart", "Offers", "No commission"]}
           />
+          <Card
+            href="/cars"
+            icon="🚗"
+            title="Used Car Showroom"
+            text="Buy and sell pre-owned cars with photos, EMI calculator and WhatsApp enquiries."
+            tags={["Buy & sell", "EMI calculator", "Test drive"]}
+          />
         </div>
+        <Card
+          href="/estate"
+          icon="🏡"
+          title="Real Estate"
+          text="Property listings for sale and rent with photos, EMI calculator and site visit booking."
+          tags={["Buy & rent", "Site visit", "EMI calculator"]}
+        />
 
         <div className="mt-12 grid grid-cols-3 gap-3 text-center text-xs text-neutral-400">
           <div className="rounded-2xl bg-neutral-900 p-4">
@@ -165,7 +183,14 @@ function Root() {
     );
   const which = share ? share.app : direct;
   const Page =
-    { bill: Bill, site: Site, shop: Shop, dine: Dine }[which] || Menu;
+    {
+      bill: Bill,
+      site: Site,
+      shop: Shop,
+      dine: Dine,
+      cars: Cars,
+      estate: Estate,
+    }[which] || Menu;
   return <Page shared={share?.data} />;
 }
 
