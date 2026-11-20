@@ -1,14 +1,22 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-body {
-  font-family: "Inter", system-ui, sans-serif;
-  background: linear-gradient(180deg, #f8fafc, #e2e8f0);
+
+html {
+  scroll-behavior: smooth;
 }
+
+body {
+  font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  background: #07090e;
+  color: #f1f5f9;
+  -webkit-font-smoothing: antialiased;
+}
+
 @media print {
-  body { background: #fff; }
+  body { background: #fff; color: #000; }
   @page { size: A4; margin: 10mm; }
 }
-body { font-family: 'Inter', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+
 .font-display { font-family: 'Playfair Display', Georgia, serif; }

@@ -560,6 +560,12 @@ export default function Dine({ shared }) {
       {/* staff buttons */}
       {staff && (
         <div className="fixed left-3 top-3 z-40 flex gap-2 text-xs">
+          <a
+            href="/"
+            className="rounded-full bg-neutral-800/90 border border-neutral-700 px-3 py-2 text-amber-300 font-bold"
+          >
+            ← Hub
+          </a>
           <button
             onClick={() => need(() => setView("kitchen"))}
             className="rounded-full bg-neutral-800/90 px-3 py-2"

@@ -328,6 +328,94 @@ export default function App({ shared }) {
   const [plans, setPlans] = useState([]);
   const [qr, setQr] = useState("");
 
+  const [savedInvoices, setSavedInvoices] = useLS("bill-saved-invoices", [
+    {
+      id: 101,
+      no: 101,
+      type: "bill",
+      date: "2026-11-18",
+      due: "2026-11-25",
+      status: "Paid",
+      cust: { name: "Apex Infra & Towers", address: "Plot 42, Outer Ring Rd, Bengaluru", phone: "9876543210" },
+      items: [
+        { d: "Architectural Laser Cut MS Gate (12x7 ft)", q: 1, r: 54000 },
+        { d: "Powder Coating (Matt Charcoal Grey)", q: 1, r: 9500 },
+        { d: "Site Delivery & Heavy Hinge Installation", q: 1, r: 4500 },
+      ]
+    },
+    {
+      id: 102,
+      no: 102,
+      type: "bill",
+      date: "2026-11-19",
+      due: "2026-11-26",
+      status: "Unpaid",
+      cust: { name: "Deshmukh Estates", address: "14th Main, Indiranagar, Bengaluru", phone: "9845012345" },
+      items: [
+        { d: "Stainless Steel SS-304 Balcony Railing (48 rft)", q: 48, r: 1850 },
+        { d: "Toughened 12mm Glass Paneling Setup", q: 1, r: 28000 },
+      ]
+    },
+    {
+      id: 103,
+      no: 103,
+      type: "quote",
+      date: "2026-11-20",
+      due: "2026-12-05",
+      status: "Unpaid",
+      cust: { name: "Singhania Logistics", address: "Peenya Industrial Area, Phase 2", phone: "9900112233" },
+      items: [
+        { d: "Heavy Duty Motorized Warehouse Shutter (20x15 ft)", q: 2, r: 85000 },
+        { d: "Italian Heavy Motor & Remote Kit Setup", q: 2, r: 24000 },
+      ]
+    }
+  ]);
+
+  const saveCurrentInvoice = () => {
+    const inv = {
+      id: no,
+      no: +no || Date.now(),
+      type: cur,
+      date,
+      due,
+      status,
+      cust,
+      items,
+      total,
+      sub,
+      gstAmt: s.showGst ? gstAmt : 0,
+    };
+    const exists = savedInvoices.some((x) => +x.no === +no);
+    if (exists) {
+      setSavedInvoices(savedInvoices.map((x) => (+x.no === +no ? inv : x)));
+    } else {
+      setSavedInvoices([inv, ...savedInvoices]);
+    }
+    alert(`Document ${T.prefix}-${no} saved to records!`);
+  };
+
+  const loadInvoice = (inv) => {
+    setType(inv.type || "bill");
+    setNo(inv.no);
+    setDate(inv.date || today());
+    setDue(inv.due || inDays(7));
+    setStatus(inv.status || "Unpaid");
+    setCust(inv.cust || { name: "", address: "", phone: "" });
+    setItems(inv.items || [{ d: "", q: 1, r: 0 }]);
+    setView("doc");
+  };
+
+  const createNewInvoice = () => {
+    const nextNo = Math.max(0, ...savedInvoices.map((x) => +x.no || 0), +no || 0) + 1;
+    setNo(nextNo);
+    setDate(today());
+    setDue(inDays(7));
+    setStatus("Unpaid");
+    setCust({ name: "", address: "", phone: "" });
+    setItems([{ d: "", q: 1, r: 0 }]);
+    setView("doc");
+  };
+
   const [acc, setAcc] = useLS("bill-accounts", []);
   const [af, setAf] = useState({
     kind: "in",
@@ -1003,16 +1091,18 @@ export default function App({ shared }) {
                           </span>
                         </>
                       )}
-                      {unlocked && (
-                        <button
-                          className="px-2 text-red-600"
-                          onClick={() =>
-                            setItems(items.filter((_, j) => j !== i))
-                          }
-                        >
-                          ✕
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        title="Delete item"
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition"
+                        onClick={() =>
+                          items.length > 1
+                            ? setItems(items.filter((_, j) => j !== i))
+                            : setItems([{ d: "", q: 1, r: 0 }])
+                        }
+                      >
+                        ✕
+                      </button>
                     </div>
                   ))}
                   <button
@@ -1387,10 +1477,22 @@ export default function App({ shared }) {
       <div className="print:hidden sticky top-0 z-20 bg-slate-950 text-white shadow-lg">
         <div className="mx-auto max-w-5xl px-3 pt-2.5">
           <div className="flex items-center gap-2">
-            <span className="font-display truncate text-base font-bold">
+            <a
+              href="/"
+              className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-amber-300 transition hover:bg-white/20 hover:text-white"
+            >
+              <span>← All Apps Hub</span>
+            </a>
+            <span className="font-display truncate text-base font-bold text-white">
               {s.company}
             </span>
             <div className="ml-auto flex gap-2">
+              <button
+                onClick={createNewInvoice}
+                className="hidden sm:inline-block rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-3.5 py-1.5 text-xs font-extrabold text-slate-950 shadow-sm"
+              >
+                + New Document
+              </button>
               {unlocked && (
                 <>
                   <button
@@ -1420,7 +1522,7 @@ export default function App({ shared }) {
               )}
             </div>
           </div>
-          <div className="mt-1 flex gap-1 overflow-x-auto">
+          <div className="mt-2 flex gap-1 overflow-x-auto border-t border-white/10 pt-1">
             {enabled.map((t) => (
               <button
                 key={t}
@@ -1434,10 +1536,16 @@ export default function App({ shared }) {
               </button>
             ))}
             <button
+              onClick={() => setView("records")}
+              className={tab(view === "records")}
+            >
+              SAVED RECORDS ({savedInvoices.length})
+            </button>
+            <button
               onClick={() => setView("acc")}
               className={tab(view === "acc")}
             >
-              ACCOUNTS
+              ACCOUNTS / CASH BOOK
             </button>
           </div>
         </div>
@@ -1822,25 +1930,143 @@ export default function App({ shared }) {
               </div>
             </div>
             {paper(true)}
-            <div className="print:hidden mt-4 grid grid-cols-3 gap-2">
+            <div className="print:hidden mt-4 flex flex-wrap gap-2">
               <button
-                onClick={() => setPreview(true)}
-                className="rounded-full bg-slate-950 py-3 text-sm font-bold text-white"
+                onClick={createNewInvoice}
+                className="flex-1 min-w-[140px] rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 py-3 text-sm font-extrabold text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110 active:scale-95 transition"
               >
-                Preview
+                + New Document
+              </button>
+              <button
+                onClick={saveCurrentInvoice}
+                className="flex-1 min-w-[140px] rounded-xl bg-slate-900 py-3 text-sm font-bold text-white shadow hover:bg-slate-800 transition"
+              >
+                💾 Save Record
               </button>
               <button
                 onClick={() => setPreview(true)}
-                className="rounded-full bg-white py-3 text-sm font-bold ring-1 ring-slate-300"
+                className="flex-1 min-w-[120px] rounded-xl border border-slate-300 bg-white py-3 text-sm font-bold text-slate-900 shadow-sm hover:bg-slate-50 transition"
               >
-                PDF
+                👁 Preview / PDF
               </button>
               <button
                 onClick={downloadExcel}
-                className="rounded-full bg-white py-3 text-sm font-bold ring-1 ring-slate-300"
+                className="flex-1 min-w-[100px] rounded-xl border border-slate-300 bg-white py-3 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition"
               >
-                Excel
+                📊 Excel
               </button>
+            </div>
+          </main>
+        )}
+
+        {view === "records" && (
+          <main className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Documents</div>
+                <div className="mt-1 text-2xl font-black text-slate-900">{savedInvoices.length}</div>
+              </div>
+              <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Billed</div>
+                <div className="mt-1 text-2xl font-black text-amber-600">
+                  {money(savedInvoices.reduce((a, x) => a + (x.items ? x.items.reduce((b, it) => b + (+it.q || 0) * (+it.r || 0), 0) : (+x.total || 0)), 0))}
+                </div>
+              </div>
+              <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Collected</div>
+                <div className="mt-1 text-2xl font-black text-emerald-600">
+                  {money(savedInvoices.filter(x => x.status === "Paid").reduce((a, x) => a + (x.items ? x.items.reduce((b, it) => b + (+it.q || 0) * (+it.r || 0), 0) : (+x.total || 0)), 0))}
+                </div>
+              </div>
+              <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Unpaid / Due</div>
+                <div className="mt-1 text-2xl font-black text-red-600">
+                  {money(savedInvoices.filter(x => x.status !== "Paid").reduce((a, x) => a + (x.items ? x.items.reduce((b, it) => b + (+it.q || 0) * (+it.r || 0), 0) : (+x.total || 0)), 0))}
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/70">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4">
+                <h3 className="font-extrabold text-base text-slate-900">Document Records & History</h3>
+                <button
+                  onClick={createNewInvoice}
+                  className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800"
+                >
+                  + Create New
+                </button>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="border-b border-slate-100 bg-slate-50 uppercase tracking-wider text-slate-500 font-bold">
+                    <tr>
+                      <th className="px-4 py-3">Doc #</th>
+                      <th className="px-4 py-3">Client / Organization</th>
+                      <th className="px-4 py-3">Date</th>
+                      <th className="px-4 py-3 text-right">Amount</th>
+                      <th className="px-4 py-3 text-center">Payment Status</th>
+                      <th className="px-4 py-3 text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {savedInvoices.map((inv) => {
+                      const invTotal = inv.items ? inv.items.reduce((a, it) => a + (+it.q || 0) * (+it.r || 0), 0) : +inv.total || 0;
+                      return (
+                        <tr key={inv.id} className="hover:bg-slate-50 transition">
+                          <td className="px-4 py-3.5 font-bold text-slate-900">
+                            <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] text-slate-700 mr-1.5 uppercase">
+                              {inv.type || "bill"}
+                            </span>
+                            #{inv.no}
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <div className="font-semibold text-slate-900">{inv.cust?.name || "Cash Customer"}</div>
+                            <div className="text-[11px] text-slate-500">{inv.cust?.phone}</div>
+                          </td>
+                          <td className="px-4 py-3.5 text-slate-500">{fmtDate(inv.date)}</td>
+                          <td className="px-4 py-3.5 text-right font-extrabold text-slate-900">{money(invTotal)}</td>
+                          <td className="px-4 py-3.5 text-center">
+                            <button
+                              onClick={() => {
+                                const nextSt = inv.status === "Paid" ? "Unpaid" : "Paid";
+                                setSavedInvoices(savedInvoices.map(x => x.id === inv.id ? { ...x, status: nextSt } : x));
+                              }}
+                              className={`rounded-full px-3 py-1 text-[10px] font-extrabold transition ${
+                                inv.status === "Paid"
+                                  ? "bg-emerald-100 text-emerald-800 border border-emerald-300"
+                                  : "bg-amber-100 text-amber-800 border border-amber-300"
+                              }`}
+                            >
+                              {inv.status || "Unpaid"} ↺
+                            </button>
+                          </td>
+                          <td className="px-4 py-3.5 text-center">
+                            <div className="flex items-center justify-center gap-2">
+                              <button
+                                onClick={() => loadInvoice(inv)}
+                                className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800"
+                              >
+                                Edit / View
+                              </button>
+                              <button
+                                onClick={() => {
+                                  if (confirm(`Delete record #${inv.no}?`)) {
+                                    setSavedInvoices(savedInvoices.filter(x => x.id !== inv.id));
+                                  }
+                                }}
+                                className="text-slate-400 hover:text-red-600 p-1"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </main>
         )}
@@ -2034,17 +2260,16 @@ export default function App({ shared }) {
                     {e.kind === "in" ? "+" : "-"}
                     {money(e.amount)}
                   </div>
-                  {unlocked && (
-                    <button
-                      className="px-2 text-red-600"
-                      onClick={() =>
-                        confirm("Delete this entry?") &&
-                        setAcc(acc.filter((x) => x.id !== e.id))
-                      }
-                    >
-                      ✕
-                    </button>
-                  )}
+                  <button
+                    className="p-1 text-slate-400 hover:text-red-600 transition"
+                    title="Delete entry"
+                    onClick={() =>
+                      confirm("Delete this entry?") &&
+                      setAcc(acc.filter((x) => x.id !== e.id))
+                    }
+                  >
+                    ✕
+                  </button>
                 </div>
               ))}
             </div>

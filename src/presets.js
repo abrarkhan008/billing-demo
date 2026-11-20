@@ -79,3 +79,19 @@ export const estatePresets = {
     color: "#0e5a47",
   },
 };
+export const crmPresets = {
+  apex: {
+    company: "Apex Enterprise Solutions",
+    phone: "9999999999",
+    whatsapp: "919999999999",
+    color: "#f59e0b",
+  },
+};
+export const hrmsPresets = {
+  nexus: {
+    company: "Nexus Workforce Group",
+    phone: "9999999999",
+    whatsapp: "919999999999",
+    color: "#6366f1",
+  },
+};

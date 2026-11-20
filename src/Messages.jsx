@@ -57,6 +57,24 @@ const PRODUCTS = {
     ls: "estate-data",
     nk: "name",
   },
+  crm: {
+    path: "crm",
+    label: "CRM Lead Pipeline",
+    en: "CRM sales system",
+    hi: "CRM सेल्स सिस्टम",
+    kn: "CRM ಸೇಲ್ಸ್ ಸಿಸ್ಟಮ್",
+    ls: "crm-deals-data",
+    nk: "title",
+  },
+  hrms: {
+    path: "hrms",
+    label: "HRMS Staff & Payroll",
+    en: "HRMS staff & payroll system",
+    hi: "HRMS स्टाफ और पेरोल सिस्टम",
+    kn: "HRMS ಸಿಬ್ಬಂದಿ ಮತ್ತು ವೇತನ ಸಿಸ್ಟಮ್",
+    ls: "hrms-employees-data",
+    nk: "name",
+  },
 };
 
 const STATUS = [
@@ -307,7 +325,10 @@ export default function Messages() {
     <div className="min-h-screen bg-slate-100 pb-16">
       <header className="sticky top-0 z-10 bg-slate-900 px-4 py-3 text-white">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
-          <b>Message maker</b>
+          <div className="flex items-center gap-3">
+            <a href="/" className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-amber-300 hover:bg-white/20">← Hub</a>
+            <b>Message maker</b>
+          </div>
           <span className="text-xs text-slate-400">
             Only you should use this page
           </span>

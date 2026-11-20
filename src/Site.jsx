@@ -200,6 +200,9 @@ export default function Site({ shared }) {
               "linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.6))",
           }}
         />
+        <a href="/" className="absolute top-4 left-4 z-20 rounded-full bg-black/40 border border-white/20 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur hover:bg-black/60">
+          ← Hub
+        </a>
         <div className="relative z-10 max-w-2xl px-6">
           <span className="inline-block rounded-full bg-white/20 px-4 py-1 text-xs font-semibold tracking-widest backdrop-blur">
             BOOK YOUR DATE TODAY

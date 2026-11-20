@@ -180,6 +180,7 @@ export default function Cars({ shared }) {
       {/* NAV */}
       <header className="sticky top-0 z-20 text-white shadow-lg" style={{ background: INK }}>
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
+          <a href="/" className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-amber-300 hover:bg-white/20">← Hub</a>
           <div className="min-w-0 flex-1">
             <div className="truncate text-2xl font-extrabold uppercase leading-none tracking-wide" style={DISPLAY}>{d.name}</div>
           </div>

@@ -94,6 +94,7 @@ export default function Shop({ shared }) {
       {/* top bar */}
       <header className="sticky top-0 z-20 text-white shadow-lg" style={{ background: `linear-gradient(135deg, ${c}, #0f172a)` }}>
         <div className="mx-auto flex max-w-6xl items-center gap-3 p-3">
+          <a href="/" className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold hover:bg-white/30 text-white shrink-0">← Hub</a>
           <div className="min-w-0 flex-1">
             <div className="truncate text-lg font-extrabold">{d.name}</div>
             <div className="truncate text-xs opacity-80">{d.tagline}</div>
