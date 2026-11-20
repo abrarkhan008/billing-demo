@@ -73,6 +73,8 @@ const SWATCHES = [
   "#111827",
 ];
 const GOLD = "#d4b06a";
+const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@300;400;500;600;700&display=swap');
+.font-display{font-family:'Cormorant Garamond',Georgia,serif!important}`;
 
 /* ---------- amount in words ---------- */
 function toWords(n, indian, c) {
@@ -336,12 +338,16 @@ export default function App({ shared }) {
       date: "2026-11-18",
       due: "2026-11-25",
       status: "Paid",
-      cust: { name: "Apex Infra & Towers", address: "Plot 42, Outer Ring Rd, Bengaluru", phone: "9876543210" },
+      cust: {
+        name: "Apex Infra & Towers",
+        address: "Plot 42, Outer Ring Rd, Bengaluru",
+        phone: "9876543210",
+      },
       items: [
         { d: "Architectural Laser Cut MS Gate (12x7 ft)", q: 1, r: 54000 },
         { d: "Powder Coating (Matt Charcoal Grey)", q: 1, r: 9500 },
         { d: "Site Delivery & Heavy Hinge Installation", q: 1, r: 4500 },
-      ]
+      ],
     },
     {
       id: 102,
@@ -350,11 +356,19 @@ export default function App({ shared }) {
       date: "2026-11-19",
       due: "2026-11-26",
       status: "Unpaid",
-      cust: { name: "Deshmukh Estates", address: "14th Main, Indiranagar, Bengaluru", phone: "9845012345" },
+      cust: {
+        name: "Deshmukh Estates",
+        address: "14th Main, Indiranagar, Bengaluru",
+        phone: "9845012345",
+      },
       items: [
-        { d: "Stainless Steel SS-304 Balcony Railing (48 rft)", q: 48, r: 1850 },
+        {
+          d: "Stainless Steel SS-304 Balcony Railing (48 rft)",
+          q: 48,
+          r: 1850,
+        },
         { d: "Toughened 12mm Glass Paneling Setup", q: 1, r: 28000 },
-      ]
+      ],
     },
     {
       id: 103,
@@ -363,12 +377,20 @@ export default function App({ shared }) {
       date: "2026-11-20",
       due: "2026-12-05",
       status: "Unpaid",
-      cust: { name: "Singhania Logistics", address: "Peenya Industrial Area, Phase 2", phone: "9900112233" },
+      cust: {
+        name: "Singhania Logistics",
+        address: "Peenya Industrial Area, Phase 2",
+        phone: "9900112233",
+      },
       items: [
-        { d: "Heavy Duty Motorized Warehouse Shutter (20x15 ft)", q: 2, r: 85000 },
+        {
+          d: "Heavy Duty Motorized Warehouse Shutter (20x15 ft)",
+          q: 2,
+          r: 85000,
+        },
         { d: "Italian Heavy Motor & Remote Kit Setup", q: 2, r: 24000 },
-      ]
-    }
+      ],
+    },
   ]);
 
   const saveCurrentInvoice = () => {
@@ -406,7 +428,8 @@ export default function App({ shared }) {
   };
 
   const createNewInvoice = () => {
-    const nextNo = Math.max(0, ...savedInvoices.map((x) => +x.no || 0), +no || 0) + 1;
+    const nextNo =
+      Math.max(0, ...savedInvoices.map((x) => +x.no || 0), +no || 0) + 1;
     setNo(nextNo);
     setDate(today());
     setDue(inDays(7));
@@ -731,7 +754,8 @@ export default function App({ shared }) {
         <div
           className="px-5 py-6 text-white sm:px-10"
           style={{
-            background: `linear-gradient(120deg, ${s.color}, ${s.color}cc 55%, #0f172a)`,
+            background: `linear-gradient(135deg, ${s.color} 0%, #0b1220 130%)`,
+            borderBottom: `3px solid ${GOLD}`,
           }}
         >
           <div className="flex items-center gap-4">
@@ -828,13 +852,13 @@ export default function App({ shared }) {
     }[tpl];
 
     const billBox = {
-      modern: { background: s.color + "0d", borderRadius: 10 },
+      modern: { background: "#faf9f6", borderLeft: `3px solid ${s.color}` },
       classic: { border: "1px solid #111" },
       minimal: { borderLeft: `3px solid ${s.color}`, paddingLeft: 14 },
       elegant: { background: "#f8f6f1", borderLeft: `3px solid ${GOLD}` },
     }[tpl];
     const thStyle = {
-      modern: { background: s.color + "14", color: s.color },
+      modern: { borderBottom: `2px solid ${s.color}`, color: s.color },
       classic: {
         borderTop: "2px solid #111",
         borderBottom: "2px solid #111",
@@ -844,7 +868,12 @@ export default function App({ shared }) {
       elegant: { background: "#0b0b0f", color: GOLD },
     }[tpl];
     const totBox = {
-      modern: { background: s.color, color: "#fff", borderRadius: 10 },
+      modern: {
+        background: `linear-gradient(135deg, ${s.color}, #0b1220)`,
+        color: "#fff",
+        borderRadius: 6,
+        borderBottom: `3px solid ${GOLD}`,
+      },
       classic: {
         borderTop: "2px solid #111",
         borderBottom: "2px solid #111",
@@ -923,8 +952,11 @@ export default function App({ shared }) {
 
     return (
       <div
-        className="relative overflow-hidden bg-white shadow-[0_18px_50px_-18px_rgba(15,23,42,.35)] ring-1 ring-slate-200/70 print:shadow-none print:ring-0"
-        style={{ fontSize: s.textSize }}
+        className="relative overflow-hidden bg-white shadow-[0_30px_80px_-30px_rgba(15,23,42,.45)] ring-1 ring-slate-200 print:shadow-none print:ring-0"
+        style={{
+          fontSize: s.textSize,
+          fontFamily: "'Jost',system-ui,sans-serif",
+        }}
       >
         {header}
         {s.wmOn && (
@@ -1440,6 +1472,7 @@ export default function App({ shared }) {
   if (preview)
     return (
       <div className="min-h-screen bg-[#e9e7e1] pb-10 print:bg-white print:pb-0">
+        <style>{FONTS}</style>
         <style>{`@page{size:A4;margin:10mm}@media print{*{-webkit-print-color-adjust:exact;print-color-adjust:exact}body{background:#fff}}`}</style>
         <div className="print:hidden sticky top-0 z-20 flex items-center gap-2 bg-slate-950 p-2.5 text-white">
           <button
@@ -1473,7 +1506,11 @@ export default function App({ shared }) {
     (active ? "border-white text-white" : "border-transparent text-slate-400");
 
   return (
-    <div className="min-h-screen bg-[#f2f0ea] pb-16">
+    <div
+      className="min-h-screen bg-[#f2f0ea] pb-16"
+      style={{ fontFamily: "'Jost',system-ui,sans-serif" }}
+    >
+      <style>{FONTS}</style>
       <div className="print:hidden sticky top-0 z-20 bg-slate-950 text-white shadow-lg">
         <div className="mx-auto max-w-5xl px-3 pt-2.5">
           <div className="flex items-center gap-2">
@@ -1856,15 +1893,15 @@ export default function App({ shared }) {
               </div>
             )}
 
+          
             <H>Owner tools</H>
-                        <H>Owner tools</H>
             <a
               href="/msg"
               className="block w-full rounded bg-slate-900 py-2 text-center text-sm font-semibold text-white"
             >
               ✉ Open message maker
             </a>
-            
+
             <button
               onClick={changePass}
               className="w-full rounded border py-2 text-sm"
@@ -1930,7 +1967,7 @@ export default function App({ shared }) {
               </div>
             </div>
             {paper(true)}
-            <div className="print:hidden mt-4 flex flex-wrap gap-2">
+            <div className="print:hidden sticky bottom-0 z-10 -mx-2 mt-4 flex flex-wrap gap-2 bg-[#f2f0ea]/95 p-2 backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:p-0">
               <button
                 onClick={createNewInvoice}
                 className="flex-1 min-w-[140px] rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 py-3 text-sm font-extrabold text-slate-950 shadow-md shadow-amber-500/20 hover:brightness-110 active:scale-95 transition"
@@ -1963,32 +2000,84 @@ export default function App({ shared }) {
           <main className="space-y-4">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Documents</div>
-                <div className="mt-1 text-2xl font-black text-slate-900">{savedInvoices.length}</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Total Documents
+                </div>
+                <div className="mt-1 text-2xl font-black text-slate-900">
+                  {savedInvoices.length}
+                </div>
               </div>
               <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Billed</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Total Billed
+                </div>
                 <div className="mt-1 text-2xl font-black text-amber-600">
-                  {money(savedInvoices.reduce((a, x) => a + (x.items ? x.items.reduce((b, it) => b + (+it.q || 0) * (+it.r || 0), 0) : (+x.total || 0)), 0))}
+                  {money(
+                    savedInvoices.reduce(
+                      (a, x) =>
+                        a +
+                        (x.items
+                          ? x.items.reduce(
+                              (b, it) => b + (+it.q || 0) * (+it.r || 0),
+                              0,
+                            )
+                          : +x.total || 0),
+                      0,
+                    ),
+                  )}
                 </div>
               </div>
               <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Collected</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Collected
+                </div>
                 <div className="mt-1 text-2xl font-black text-emerald-600">
-                  {money(savedInvoices.filter(x => x.status === "Paid").reduce((a, x) => a + (x.items ? x.items.reduce((b, it) => b + (+it.q || 0) * (+it.r || 0), 0) : (+x.total || 0)), 0))}
+                  {money(
+                    savedInvoices
+                      .filter((x) => x.status === "Paid")
+                      .reduce(
+                        (a, x) =>
+                          a +
+                          (x.items
+                            ? x.items.reduce(
+                                (b, it) => b + (+it.q || 0) * (+it.r || 0),
+                                0,
+                              )
+                            : +x.total || 0),
+                        0,
+                      ),
+                  )}
                 </div>
               </div>
               <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200/70">
-                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Unpaid / Due</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Unpaid / Due
+                </div>
                 <div className="mt-1 text-2xl font-black text-red-600">
-                  {money(savedInvoices.filter(x => x.status !== "Paid").reduce((a, x) => a + (x.items ? x.items.reduce((b, it) => b + (+it.q || 0) * (+it.r || 0), 0) : (+x.total || 0)), 0))}
+                  {money(
+                    savedInvoices
+                      .filter((x) => x.status !== "Paid")
+                      .reduce(
+                        (a, x) =>
+                          a +
+                          (x.items
+                            ? x.items.reduce(
+                                (b, it) => b + (+it.q || 0) * (+it.r || 0),
+                                0,
+                              )
+                            : +x.total || 0),
+                        0,
+                      ),
+                  )}
                 </div>
               </div>
             </div>
 
             <div className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-200/70">
               <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 p-4">
-                <h3 className="font-extrabold text-base text-slate-900">Document Records & History</h3>
+                <h3 className="font-extrabold text-base text-slate-900">
+                  Document Records & History
+                </h3>
                 <button
                   onClick={createNewInvoice}
                   className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800"
@@ -2011,9 +2100,17 @@ export default function App({ shared }) {
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {savedInvoices.map((inv) => {
-                      const invTotal = inv.items ? inv.items.reduce((a, it) => a + (+it.q || 0) * (+it.r || 0), 0) : +inv.total || 0;
+                      const invTotal = inv.items
+                        ? inv.items.reduce(
+                            (a, it) => a + (+it.q || 0) * (+it.r || 0),
+                            0,
+                          )
+                        : +inv.total || 0;
                       return (
-                        <tr key={inv.id} className="hover:bg-slate-50 transition">
+                        <tr
+                          key={inv.id}
+                          className="hover:bg-slate-50 transition"
+                        >
                           <td className="px-4 py-3.5 font-bold text-slate-900">
                             <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] text-slate-700 mr-1.5 uppercase">
                               {inv.type || "bill"}
@@ -2021,16 +2118,31 @@ export default function App({ shared }) {
                             #{inv.no}
                           </td>
                           <td className="px-4 py-3.5">
-                            <div className="font-semibold text-slate-900">{inv.cust?.name || "Cash Customer"}</div>
-                            <div className="text-[11px] text-slate-500">{inv.cust?.phone}</div>
+                            <div className="font-semibold text-slate-900">
+                              {inv.cust?.name || "Cash Customer"}
+                            </div>
+                            <div className="text-[11px] text-slate-500">
+                              {inv.cust?.phone}
+                            </div>
                           </td>
-                          <td className="px-4 py-3.5 text-slate-500">{fmtDate(inv.date)}</td>
-                          <td className="px-4 py-3.5 text-right font-extrabold text-slate-900">{money(invTotal)}</td>
+                          <td className="px-4 py-3.5 text-slate-500">
+                            {fmtDate(inv.date)}
+                          </td>
+                          <td className="px-4 py-3.5 text-right font-extrabold text-slate-900">
+                            {money(invTotal)}
+                          </td>
                           <td className="px-4 py-3.5 text-center">
                             <button
                               onClick={() => {
-                                const nextSt = inv.status === "Paid" ? "Unpaid" : "Paid";
-                                setSavedInvoices(savedInvoices.map(x => x.id === inv.id ? { ...x, status: nextSt } : x));
+                                const nextSt =
+                                  inv.status === "Paid" ? "Unpaid" : "Paid";
+                                setSavedInvoices(
+                                  savedInvoices.map((x) =>
+                                    x.id === inv.id
+                                      ? { ...x, status: nextSt }
+                                      : x,
+                                  ),
+                                );
                               }}
                               className={`rounded-full px-3 py-1 text-[10px] font-extrabold transition ${
                                 inv.status === "Paid"
@@ -2052,7 +2164,11 @@ export default function App({ shared }) {
                               <button
                                 onClick={() => {
                                   if (confirm(`Delete record #${inv.no}?`)) {
-                                    setSavedInvoices(savedInvoices.filter(x => x.id !== inv.id));
+                                    setSavedInvoices(
+                                      savedInvoices.filter(
+                                        (x) => x.id !== inv.id,
+                                      ),
+                                    );
                                   }
                                 }}
                                 className="text-slate-400 hover:text-red-600 p-1"

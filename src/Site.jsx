@@ -8,18 +8,19 @@ import {
   readImage as readImg,
 } from "./extras";
 
-/* ========== STARTING DETAILS (you can change all of this inside the website) ========== */
 const DEFAULT = {
   name: "Your Business Name",
   tagline: "Mehendi & Makeup Artist",
   phone: "9999999999",
-  whatsapp: "919999999999", // country code + number, no +
-  insta: "", // only the username, example: priya_mehendi
-  address: "", // type the area / shop address, map will appear
+  whatsapp: "919999999999",
+  insta: "",
+  address: "",
   color: "#9d174d",
   about:
     "Write about your work here. Years of experience, areas you serve, special styles.",
   hero: "",
+  niche: "mehendi",
+  stats: "500+|Happy clients\n8 yrs|Experience\n4.9★|Average rating",
   gallery: [],
   services: [
     { title: "Bridal", price: "₹3,000 onwards", text: "Full hands + legs" },
@@ -33,24 +34,174 @@ const DEFAULT = {
     { who: "Sneha", text: "Everyone loved it." },
   ],
 };
-
-// const slug = location.pathname.split("/")[2];
-// const isShared =
-//   new URLSearchParams(location.search).has("d") || !!sitePresets[slug];
-
-// function load() {
-//   let d = DEFAULT;
-//   try {
-//     const x = JSON.parse(localStorage.getItem("site-data"));
-//     if (x) d = { ...DEFAULT, ...x };
-//   } catch {}
-//   if (sitePresets[slug]) d = { ...d, ...sitePresets[slug] };
-//   try {
-//     const q = new URLSearchParams(location.search).get("d");
-//     if (q) d = { ...d, ...JSON.parse(decodeURIComponent(escape(atob(q)))) };
-//   } catch {}
-//   return d;
-// }
+const NICHES = {
+  mehendi: {
+    label: "Mehendi",
+    emoji: "🌸",
+    color: "#9d174d",
+    tagline: "Mehendi & Makeup Artist",
+    about:
+      "Intricate bridal and party mehendi, crafted with natural henna and years of care.",
+    stats: "500+|Brides served\n8 yrs|Experience\n4.9★|Average rating",
+    services: [
+      { title: "Bridal", price: "₹3,000 onwards", text: "Full hands + legs" },
+      { title: "Arabic", price: "₹500 onwards", text: "Quick and elegant" },
+      { title: "Party", price: "₹300 onwards", text: "Festival and functions" },
+    ],
+    steps:
+      "Choose a design from the portfolio\nMessage us with your date\nWe confirm your booking\nEnjoy your look",
+    reviews: [
+      { who: "Anita", text: "Very neat work and on time." },
+      { who: "Sneha", text: "Everyone loved it." },
+    ],
+  },
+  salon: {
+    label: "Salon",
+    emoji: "💇",
+    color: "#a16207",
+    tagline: "Unisex Salon & Spa",
+    about:
+      "Hair, skin and grooming by trained stylists in a calm, hygienic studio.",
+    stats: "3,000+|Happy guests\n12|Expert stylists\n4.8★|Google rating",
+    services: [
+      {
+        title: "Haircut & Styling",
+        price: "₹400 onwards",
+        text: "Consultation included",
+      },
+      {
+        title: "Facial & Cleanup",
+        price: "₹800 onwards",
+        text: "Skin-type specific",
+      },
+      {
+        title: "Bridal Package",
+        price: "₹15,000 onwards",
+        text: "Trial included",
+      },
+    ],
+    steps:
+      "Pick a service\nBook your slot on WhatsApp\nVisit the studio\nWalk out glowing",
+    reviews: [
+      { who: "Priya", text: "Best haircut I have had in years." },
+      { who: "Rahul", text: "Clean, calm and on time." },
+    ],
+  },
+  clinic: {
+    label: "Clinic",
+    emoji: "🩺",
+    color: "#0f766e",
+    tagline: "Family & Dental Clinic",
+    about:
+      "Caring, evidence-based treatment with transparent pricing and short waiting times.",
+    stats: "10,000+|Patients treated\n15 yrs|Experience\n4.9★|Patient rating",
+    services: [
+      {
+        title: "Consultation",
+        price: "₹300",
+        text: "Includes follow-up for 7 days",
+      },
+      {
+        title: "Dental Cleaning",
+        price: "₹800",
+        text: "Scaling and polishing",
+      },
+      {
+        title: "Health Check",
+        price: "₹1,500",
+        text: "Basic blood tests included",
+      },
+    ],
+    steps:
+      "Book an appointment\nGet a confirmation message\nVisit the clinic\nFollow-up care",
+    reviews: [
+      { who: "Meena", text: "Doctor explained everything patiently." },
+      { who: "Kiran", text: "No long waiting. Very clean clinic." },
+    ],
+  },
+  gym: {
+    label: "Gym",
+    emoji: "🏋️",
+    color: "#b91c1c",
+    tagline: "Strength & Fitness Studio",
+    about:
+      "Personal coaching, modern equipment and a community that keeps you showing up.",
+    stats: "800+|Active members\n6|Certified trainers\n24/7|Open access",
+    services: [
+      { title: "Monthly", price: "₹1,500", text: "Full gym access" },
+      { title: "Quarterly", price: "₹3,900", text: "Free diet plan" },
+      {
+        title: "Personal Training",
+        price: "₹6,000 / month",
+        text: "One-to-one coaching",
+      },
+    ],
+    steps: "Book a free trial\nBody assessment\nGet your plan\nTrain and track",
+    reviews: [
+      { who: "Arjun", text: "Lost 12 kg in four months." },
+      { who: "Divya", text: "Trainers actually care." },
+    ],
+  },
+  interior: {
+    label: "Interiors",
+    emoji: "🛋️",
+    color: "#44403c",
+    tagline: "Interior Design & Fit-outs",
+    about:
+      "Homes and offices designed around how you live, delivered on a fixed timeline.",
+    stats:
+      "250+|Projects delivered\n10 yrs|Experience\n45 days|Average handover",
+    services: [
+      {
+        title: "Modular Kitchen",
+        price: "₹1,10,000 onwards",
+        text: "Design, supply, install",
+      },
+      {
+        title: "Full Home",
+        price: "₹1,200 / sq ft",
+        text: "Turnkey with warranty",
+      },
+      {
+        title: "Office Fit-out",
+        price: "₹900 / sq ft",
+        text: "Minimal downtime",
+      },
+    ],
+    steps:
+      "Free site visit\n3D design and quote\nExecution with weekly updates\nHandover and warranty",
+    reviews: [
+      { who: "Nikhil", text: "Delivered on the promised date." },
+      { who: "Shweta", text: "Exactly what the 3D showed." },
+    ],
+  },
+  photo: {
+    label: "Photographer",
+    emoji: "📸",
+    color: "#1e293b",
+    tagline: "Wedding & Portrait Photography",
+    about: "Honest, cinematic storytelling for weddings, families and brands.",
+    stats: "300+|Events covered\n9 yrs|Experience\n48 hrs|Preview delivery",
+    services: [
+      {
+        title: "Wedding",
+        price: "₹60,000 onwards",
+        text: "Two photographers, full day",
+      },
+      {
+        title: "Pre-wedding",
+        price: "₹15,000 onwards",
+        text: "Outdoor, 4 hours",
+      },
+      { title: "Portrait", price: "₹3,000", text: "Studio or outdoor" },
+    ],
+    steps: "Share your date\nPick a package\nShoot day\nGet edited gallery",
+    reviews: [
+      { who: "Asha", text: "Every frame felt like us." },
+      { who: "Vivek", text: "Quick delivery and great edits." },
+    ],
+  },
+};
 const slug = location.pathname.split("/")[2];
 
 function load(shared) {
@@ -69,35 +220,31 @@ function load(shared) {
   if (shared) d = { ...d, ...shared };
   return d;
 }
-// make photo smaller so phone storage does not fill up
-function readImage(file, max, cb) {
-  const r = new FileReader();
-  r.onload = () => {
-    const img = new Image();
-    img.onload = () => {
-      const k = Math.min(1, max / Math.max(img.width, img.height));
-      const c = document.createElement("canvas");
-      c.width = img.width * k;
-      c.height = img.height * k;
-      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-      cb(c.toDataURL("image/jpeg", 0.8));
-    };
-    img.src = r.result;
-  };
-  r.readAsDataURL(file);
-}
 
 const inp =
   "w-full rounded border border-slate-300 bg-white px-2 py-2 text-sm text-slate-900";
 const Field = ({ label, children }) => (
-  <label className="block text-xs font-medium text-slate-600">
+  <div className="block text-xs font-medium text-slate-600">
     {label}
     <div className="mt-1">{children}</div>
-  </label>
+  </div>
 );
 const H = ({ children }) => (
   <h3 className="border-t pt-3 text-sm font-bold text-slate-800">{children}</h3>
 );
+
+const CSS = `
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@300;400;500;600&display=swap');
+.sx{font-family:'Jost',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.sx .serif{font-family:'Cormorant Garamond',Georgia,serif}
+.sx-rise{animation:sxr .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes sxr{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.sx-cols{column-count:2;column-gap:10px}
+@media(min-width:768px){.sx-cols{column-count:3;column-gap:14px}}
+.sx-cols img{break-inside:avoid;margin-bottom:10px;width:100%;display:block;cursor:zoom-in}
+.sx html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){.sx-rise{animation:none}}
+`;
 
 export default function Site({ shared }) {
   const [d, setD] = useState(() => load(shared));
@@ -120,6 +267,25 @@ export default function Site({ shared }) {
     }
   };
   const set = (k, v) => save({ ...d, [k]: v });
+  const applyNiche = (k) => {
+    const n = NICHES[k];
+    save({
+      ...d,
+      niche: k,
+      color: n.color,
+      tagline: n.tagline,
+      about: n.about,
+      stats: n.stats,
+      services: n.services,
+      steps: n.steps,
+      reviews: n.reviews,
+    });
+  };
+  const stats = (d.stats || "")
+    .split("\n")
+    .filter(Boolean)
+    .map((x) => x.split("|"));
+  const emoji = NICHES[d.niche]?.emoji || "✨";
   const upList = (key, i, f, v) =>
     set(
       key,
@@ -127,6 +293,7 @@ export default function Site({ shared }) {
     );
 
   const c = d.color;
+  const ink = "#1c1917";
   const wa = `https://wa.me/${d.whatsapp}?text=${encodeURIComponent("Hi, I want to book from your website.")}`;
   const myWa = `https://wa.me/${OWNER.whatsapp}?text=${encodeURIComponent(OWNER.message)}`;
   const instaUrl = d.insta
@@ -155,7 +322,6 @@ export default function Site({ shared }) {
       setOpen(true);
     } else alert("Wrong password");
   };
-
   const addGallery = (f) =>
     readImg(f, 900, "image/jpeg", (x) =>
       setD((old) => {
@@ -166,111 +332,205 @@ export default function Site({ shared }) {
         return n;
       }),
     );
-
   const copyLink = async () => {
     try {
       const url = await createShare("site", "Customer", d);
       try {
         await navigator.clipboard.writeText(url);
       } catch {}
-      alert("Short link copied!\n\n" + url + "\n\nPhotos are included now.");
+      alert("Short link copied!\n\n" + url);
     } catch {
       alert("Could not create link. Check Supabase keys in extras.jsx");
     }
   };
 
+  const Title = ({ children, sub }) => (
+    <div className="mb-10 text-center">
+      <h2
+        className="serif text-4xl font-semibold leading-none sm:text-5xl"
+        style={{ color: ink }}
+      >
+        {children}
+      </h2>
+      <div className="mx-auto mt-4 h-px w-14" style={{ background: c }} />
+      {sub && <p className="mt-4 text-sm font-light text-stone-500">{sub}</p>}
+    </div>
+  );
+
+  const initial = (d.name || "?").trim()[0];
+
   return (
-    <div
-      className="min-h-screen bg-white text-slate-800"
-      style={{ fontFamily: "'Poppins', system-ui, sans-serif" }}
-    >
+    <div className="sx min-h-screen bg-[#faf8f5] text-stone-800">
+      <style>{CSS}</style>
+      {!isShared && (
+        <div className="fixed inset-x-0 top-12 z-30 flex gap-2 overflow-x-auto px-3 py-2">
+          {Object.entries(NICHES).map(([k, n]) => (
+            <button
+              key={k}
+              onClick={() => applyNiche(k)}
+              className={
+                "shrink-0 rounded-full px-4 py-1.5 text-xs font-semibold backdrop-blur " +
+                (d.niche === k
+                  ? "bg-white text-slate-900"
+                  : "bg-black/40 text-white")
+              }
+            >
+              {n.emoji} {n.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* NAV */}
+      <nav
+        className="fixed inset-x-0 top-0 z-30 flex items-center justify-between px-4 py-3 text-white sm:px-8"
+        style={{ background: "linear-gradient(rgba(0,0,0,.45),transparent)" }}
+      >
+        <a
+          href="/"
+          className="rounded-full border border-white/30 px-3 py-1 text-xs backdrop-blur"
+        >
+          ← Hub
+        </a>
+        <div className="hidden gap-7 text-sm font-light tracking-wide sm:flex">
+          <a href="#services">Services</a>
+          <a href="#work">Portfolio</a>
+          <a href="#reviews">Reviews</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <a
+          href={wa}
+          className="rounded-full bg-white px-4 py-1.5 text-xs font-semibold"
+          style={{ color: c }}
+        >
+          Book now
+        </a>
+      </nav>
+
       {/* HERO */}
-      <section
-        className="relative flex min-h-[90vh] items-center justify-center bg-cover bg-center text-center text-white"
+      <header
+        className="relative flex min-h-[100svh] items-end bg-cover bg-center text-white"
         style={{
           backgroundImage: d.hero
             ? `url(${d.hero})`
-            : `linear-gradient(135deg, ${c}, ${c}99 55%, #1e1b4b)`,
+            : `radial-gradient(120% 90% at 20% 10%, ${c}, #0c0a09 75%)`,
         }}
       >
         <div
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.6))",
+              "linear-gradient(to top, rgba(12,10,9,.88) 5%, rgba(12,10,9,.25) 55%, rgba(12,10,9,.35))",
           }}
         />
-        <a href="/" className="absolute top-4 left-4 z-20 rounded-full bg-black/40 border border-white/20 px-3.5 py-1.5 text-xs font-semibold text-white backdrop-blur hover:bg-black/60">
-          ← Hub
-        </a>
-        <div className="relative z-10 max-w-2xl px-6">
-          <span className="inline-block rounded-full bg-white/20 px-4 py-1 text-xs font-semibold tracking-widest backdrop-blur">
-            BOOK YOUR DATE TODAY
-          </span>
-          <h1 className="mt-4 text-4xl font-extrabold leading-tight sm:text-6xl">
+        {!d.hero && (
+          <div className="serif pointer-events-none absolute right-[-4%] top-[14%] select-none text-[46vw] font-bold leading-none opacity-[.07]">
+            {initial}
+          </div>
+        )}
+        <div className="sx-rise relative z-10 mx-auto w-full max-w-6xl px-6 pb-14 sm:pb-20">
+          <p className="mb-4 text-sm font-light tracking-[.18em] text-white/75">
+            {d.tagline}
+          </p>
+          <h1 className="serif max-w-3xl text-[3.4rem] font-semibold leading-[.95] sm:text-8xl">
             {d.name}
           </h1>
-          <p className="mt-3 text-lg font-light sm:text-2xl">{d.tagline}</p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <div className="mt-9 flex flex-wrap gap-3">
             <a
               href={wa}
-              className="rounded-full px-8 py-3 font-semibold text-white shadow-xl"
-              style={{ background: c }}
+              className="rounded-full bg-white px-8 py-3.5 text-sm font-semibold shadow-2xl"
+              style={{ color: c }}
             >
               Book on WhatsApp
             </a>
             <a
               href="#work"
-              className="rounded-full border border-white/70 px-8 py-3 font-semibold backdrop-blur"
+              className="rounded-full border border-white/50 px-8 py-3.5 text-sm font-medium backdrop-blur"
             >
-              See Our Work
+              View portfolio
             </a>
           </div>
         </div>
-      </section>
+      </header>
+      {stats.length > 0 && (
+        <div className="border-b border-stone-200 bg-white">
+          <div className="mx-auto grid max-w-4xl grid-cols-3 divide-x divide-stone-200 px-2 py-7 text-center">
+            {stats.map(([n, l], i) => (
+              <div key={i} className="px-2">
+                <div
+                  className="serif text-3xl font-semibold sm:text-5xl"
+                  style={{ color: c }}
+                >
+                  {n}
+                </div>
+                <div className="mt-1 text-xs font-light text-stone-500 sm:text-sm">
+                  {l}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* ABOUT */}
-      <section className="mx-auto max-w-3xl px-6 py-12 text-center">
-        <h2 className="text-2xl font-bold" style={{ color: c }}>
-          About Us
-        </h2>
-        <p className="mt-3 whitespace-pre-line text-slate-600">{d.about}</p>
+      <section className="mx-auto max-w-3xl px-6 py-20 text-center sm:py-28">
+        <Title>About us</Title>
+        <p className="serif whitespace-pre-line text-2xl leading-relaxed text-stone-700 sm:text-[1.7rem]">
+          {d.about}
+        </p>
       </section>
 
       {/* SERVICES */}
-      <section className="bg-slate-50 px-6 py-12">
-        <h2 className="text-center text-2xl font-bold" style={{ color: c }}>
-          Services & Prices
-        </h2>
-        <div className="mx-auto mt-6 grid max-w-5xl gap-4 sm:grid-cols-3">
-          {d.services.map((s, i) => (
-            <div
-              key={i}
-              className="rounded-2xl bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-xl"
-            >
-              <div className="text-lg font-bold">{s.title}</div>
-              <div className="mt-1 font-semibold" style={{ color: c }}>
-                {s.price}
+      <section id="services" className="bg-white px-6 py-20 sm:py-28">
+        <div className="mx-auto max-w-3xl">
+          <Title sub="Transparent pricing, tailored to your occasion">
+            Services and prices
+          </Title>
+          <div>
+            {d.services.map((s, i) => (
+              <div
+                key={i}
+                className="flex items-baseline justify-between gap-4 border-b border-stone-200 py-6 first:border-t"
+              >
+                <div className="min-w-0">
+                  <div
+                    className="serif text-3xl font-semibold"
+                    style={{ color: ink }}
+                  >
+                    {s.title}
+                  </div>
+                  <p className="mt-1 text-sm font-light text-stone-500">
+                    {s.text}
+                  </p>
+                </div>
+                <div
+                  className="shrink-0 text-right text-base font-semibold sm:text-lg"
+                  style={{ color: c }}
+                >
+                  {s.price}
+                </div>
               </div>
-              <p className="mt-2 text-sm text-slate-600">{s.text}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* GALLERY */}
-      <section id="work" className="px-4 py-12">
-        <h2 className="text-center text-2xl font-bold" style={{ color: c }}>
-          Our Work
-        </h2>
-        <div className="mx-auto mt-6 grid max-w-5xl grid-cols-2 gap-2 sm:grid-cols-3">
+      <section id="work" className="px-3 py-20 sm:px-6 sm:py-28">
+        <Title>Portfolio</Title>
+        <div className="sx-cols mx-auto max-w-6xl">
           {d.gallery.length === 0
             ? [1, 2, 3, 4, 5, 6].map((n) => (
                 <div
                   key={n}
-                  className="flex aspect-square items-center justify-center rounded-lg text-4xl"
-                  style={{ background: c + "22" }}
+                  className="mb-2.5 flex items-center justify-center text-5xl"
+                  style={{
+                    background: c + (n % 2 ? "1f" : "33"),
+                    height: n % 3 ? 180 : 260,
+                    breakInside: "avoid",
+                  }}
                 >
-                  🌸
+                  {emoji}
                 </div>
               ))
             : d.gallery.map((g, i) => (
@@ -280,70 +540,75 @@ export default function Site({ shared }) {
                   alt=""
                   loading="lazy"
                   onClick={() => setBig(g)}
-                  className="aspect-square w-full cursor-pointer rounded-lg object-cover"
                 />
               ))}
         </div>
       </section>
 
-      {/* HOW IT WORKS */}
-      <section className="bg-slate-50 px-6 py-12">
-        <h2 className="text-center text-2xl font-bold" style={{ color: c }}>
-          How It Works
-        </h2>
-        <ol className="mx-auto mt-6 max-w-xl space-y-3">
-          {steps.map((t, i) => (
-            <li
-              key={i}
-              className="flex items-center gap-3 rounded-lg bg-white p-3 shadow"
-            >
-              <span
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-bold text-white"
-                style={{ background: c }}
+      {/* PROCESS */}
+      <section
+        className="px-6 py-20 text-white sm:py-28"
+        style={{ background: `linear-gradient(160deg, ${c}, #0c0a09 120%)` }}
+      >
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-12 text-center">
+            <h2 className="serif text-4xl font-semibold sm:text-5xl">
+              How booking works
+            </h2>
+          </div>
+          <ol className="space-y-7">
+            {steps.map((t, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-5 border-b border-white/15 pb-7"
               >
-                {i + 1}
-              </span>
-              {t}
-            </li>
-          ))}
-        </ol>
+                <span className="serif w-10 shrink-0 text-5xl font-semibold leading-none text-white/40">
+                  {i + 1}
+                </span>
+                <span className="pt-1 text-lg font-light">{t}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
       </section>
 
       {/* REVIEWS */}
-      <section className="px-6 py-12">
-        <h2 className="text-center text-2xl font-bold" style={{ color: c }}>
-          Happy Customers
-        </h2>
-        <div className="mx-auto mt-6 grid max-w-4xl gap-4 sm:grid-cols-2">
+      <section id="reviews" className="px-6 py-20 sm:py-28">
+        <Title>Kind words</Title>
+        <div className="mx-auto grid max-w-5xl gap-10 sm:grid-cols-2">
           {d.reviews.map((r, i) => (
-            <div key={i} className="rounded-xl border p-4">
-              <div>⭐⭐⭐⭐⭐</div>
-              <p className="mt-1 text-slate-600">"{r.text}"</p>
-              <div className="mt-2 text-sm font-semibold">— {r.who}</div>
-            </div>
+            <figure
+              key={i}
+              className="border-l-2 pl-6"
+              style={{ borderColor: c }}
+            >
+              <blockquote className="serif text-2xl italic leading-snug text-stone-700">
+                “{r.text}”
+              </blockquote>
+              <figcaption className="mt-3 text-sm font-medium tracking-wide text-stone-500">
+                {r.who}
+              </figcaption>
+            </figure>
           ))}
         </div>
       </section>
 
       {/* MAP */}
       {mapEmbed && (
-        <section className="px-4 pb-12">
-          <h2 className="text-center text-2xl font-bold" style={{ color: c }}>
-            Find Us
-          </h2>
-          <p className="mt-1 text-center text-sm text-slate-600">{d.address}</p>
+        <section className="px-4 pb-20">
+          <Title sub={d.address}>Find us</Title>
           <iframe
             title="map"
             src={mapEmbed}
             loading="lazy"
-            className="mx-auto mt-4 block h-72 w-full max-w-4xl rounded-xl border-0"
+            className="mx-auto block h-80 w-full max-w-5xl border-0 grayscale-[.4]"
           />
-          <div className="mt-3 text-center">
+          <div className="mt-4 text-center">
             <a
               href={mapOpen}
               target="_blank"
               rel="noreferrer"
-              className="inline-block rounded-full border px-5 py-2 text-sm font-semibold"
+              className="inline-block rounded-full border px-6 py-2.5 text-sm font-medium"
               style={{ color: c, borderColor: c }}
             >
               Open in Google Maps
@@ -354,22 +619,26 @@ export default function Site({ shared }) {
 
       {/* CONTACT */}
       <section
-        className="px-6 py-12 text-center text-white"
-        style={{ background: c }}
+        id="contact"
+        className="bg-[#0c0a09] px-6 py-20 text-center text-white sm:py-28"
       >
-        <h2 className="text-2xl font-bold">Book Your Date</h2>
-        <p className="mt-2">Call or WhatsApp: {d.phone}</p>
-        <div className="mt-4 flex flex-wrap justify-center gap-3">
+        <h2 className="serif text-5xl font-semibold sm:text-6xl">
+          Reserve your date
+        </h2>
+        <p className="mt-4 font-light text-white/60">
+          Call or message us on {d.phone}
+        </p>
+        <div className="mt-9 flex flex-wrap justify-center gap-3">
           <a
             href={wa}
-            className="rounded-full bg-white px-8 py-3 font-semibold"
-            style={{ color: c }}
+            className="rounded-full px-9 py-3.5 text-sm font-semibold text-white"
+            style={{ background: c }}
           >
             WhatsApp
           </a>
           <a
             href={"tel:" + d.phone}
-            className="rounded-full border border-white px-8 py-3 font-semibold"
+            className="rounded-full border border-white/30 px-9 py-3.5 text-sm font-medium"
           >
             Call
           </a>
@@ -378,7 +647,7 @@ export default function Site({ shared }) {
               href={instaUrl}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full border border-white px-8 py-3 font-semibold"
+              className="rounded-full border border-white/30 px-9 py-3.5 text-sm font-medium"
             >
               Instagram
             </a>
@@ -386,31 +655,34 @@ export default function Site({ shared }) {
         </div>
       </section>
 
-      {/* YOUR PITCH */}
-      <section className="bg-slate-900 px-6 py-8 text-center text-white">
-        <div className="font-semibold">
+      {/* PITCH */}
+      <section className="bg-stone-900 px-6 py-8 text-center text-white">
+        <div className="text-sm font-medium">
           This is a demo website made for you.
         </div>
-        <p className="mt-1 text-sm text-slate-300">{OWNER.offer}</p>
+        <p className="mx-auto mt-1 max-w-md text-xs text-stone-400">
+          {OWNER.offer}
+        </p>
         <a
           href={myWa}
-          className="mt-3 inline-block rounded bg-emerald-500 px-5 py-2 font-semibold"
+          className="mt-3 inline-block rounded-full bg-emerald-500 px-5 py-2 text-sm font-semibold"
         >
           I want this website
         </a>
       </section>
 
-      {/* floating buttons */}
       <a
         href={wa}
-        className="fixed bottom-4 right-4 z-20 rounded-full bg-emerald-500 px-5 py-3 font-bold text-white shadow-lg"
+        className="fixed bottom-4 right-4 z-20 rounded-full bg-emerald-500 px-5 py-3 text-sm font-semibold text-white shadow-xl"
+        style={{ marginBottom: "env(safe-area-inset-bottom)" }}
       >
         WhatsApp
       </a>
       {!isShared && (
         <button
           onClick={tryEdit}
-          className="fixed bottom-4 left-4 z-20 rounded-full bg-amber-400 px-4 py-3 text-sm font-bold text-slate-900 shadow-lg"
+          className="fixed bottom-4 left-4 z-20 rounded-full bg-amber-400 px-4 py-3 text-sm font-bold text-slate-900 shadow-xl"
+          style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
           ✏️ Edit
         </button>
@@ -419,15 +691,14 @@ export default function Site({ shared }) {
       {big && (
         <div
           onClick={() => setBig(null)}
-          className="fixed inset-0 z-30 flex items-center justify-center bg-black/90 p-4"
+          className="fixed inset-0 z-40 flex items-center justify-center bg-black/95 p-3"
         >
-          <img src={big} alt="" className="max-h-full max-w-full rounded" />
+          <img src={big} alt="" className="max-h-full max-w-full" />
         </div>
       )}
 
-      {/* PASSWORD */}
       {askPass && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
           <div className="w-full max-w-xs space-y-3 rounded-xl bg-white p-5 text-slate-900">
             <h2 className="font-bold">Owner Login</h2>
             <input
@@ -457,14 +728,13 @@ export default function Site({ shared }) {
         </div>
       )}
 
-      {/* EDIT PANEL */}
       {open && unlocked && (
         <div
-          className="fixed inset-0 z-30 flex justify-end bg-black/50"
+          className="fixed inset-0 z-50 flex justify-end bg-black/50"
           style={{ fontFamily: "system-ui, sans-serif" }}
         >
           <aside className="h-full w-full space-y-3 overflow-y-auto bg-white p-4 text-slate-900 sm:w-96">
-            <div className="sticky top-0 -mx-4 -mt-4 flex items-center justify-between bg-white p-4 shadow-sm">
+            <div className="sticky top-0 z-10 -mx-4 -mt-4 flex items-center justify-between bg-white p-4 shadow-sm">
               <h2 className="font-bold">Edit Website</h2>
               <button
                 onClick={() => setOpen(false)}
@@ -505,7 +775,13 @@ export default function Site({ shared }) {
                 onChange={(e) => set("color", e.target.value)}
               />
             </Field>
-
+            <H>Highlights (one per line: number|label)</H>
+            <textarea
+              rows={3}
+              className={inp}
+              value={d.stats || ""}
+              onChange={(e) => set("stats", e.target.value)}
+            />
             <H>Contact links</H>
             <Field label="Phone number">
               <input
@@ -521,7 +797,7 @@ export default function Site({ shared }) {
                 onChange={(e) => set("whatsapp", e.target.value)}
               />
             </Field>
-            <Field label="Instagram username (example: priya_mehendi)">
+            <Field label="Instagram username">
               <input
                 className={inp}
                 value={d.insta}
@@ -530,7 +806,7 @@ export default function Site({ shared }) {
             </Field>
 
             <H>Map</H>
-            <Field label="Address / area (map appears automatically)">
+            <Field label="Address / area">
               <textarea
                 rows={2}
                 className={inp}
@@ -678,6 +954,7 @@ export default function Site({ shared }) {
             >
               + Add review
             </button>
+
             <H>Owner tools</H>
             <a
               href="/msg"
@@ -685,6 +962,12 @@ export default function Site({ shared }) {
             >
               ✉ Open message maker
             </a>
+            <button
+              onClick={copyLink}
+              className="w-full rounded bg-emerald-500 py-2 text-sm font-semibold text-slate-950"
+            >
+              Share link
+            </button>
             <H>Customer links</H>
             <LinkManager app="site" getData={() => d} />
             <button
