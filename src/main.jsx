@@ -9,6 +9,7 @@ import Dine from "./Dine.jsx";
 import Cars from "./Cars.jsx";
 import Estate from "./Estate.jsx";
 import Messages from "./Messages.jsx";
+import Proposal from "./Proposal.jsx";
 import { OWNER } from "./config";
 import { getShare } from "./extras.jsx";
 import "./index.css";
@@ -26,6 +27,7 @@ const direct = [
   "cars",
   "estate",
   "msg",
+  "proposal",
 ].includes(first)
   ? first
   : q.get("app") ||
@@ -55,8 +57,14 @@ function Menu() {
       title: "CRM Lead Pipeline & Sales",
       category: "enterprise",
       highlight: "₹1.8 Cr+ Pipeline Demo",
-      description: "Visual Kanban deal tracker, stage-by-stage conversion funnel, client touchpoint logging, and instant 1-click WhatsApp follow-ups.",
-      features: ["Kanban Deal Stages", "Client Activity Logs", "Conversion Funnel Analytics", "Instant WhatsApp Messaging"],
+      description:
+        "Visual Kanban deal tracker, stage-by-stage conversion funnel, client touchpoint logging, and instant 1-click WhatsApp follow-ups.",
+      features: [
+        "Kanban Deal Stages",
+        "Client Activity Logs",
+        "Conversion Funnel Analytics",
+        "Instant WhatsApp Messaging",
+      ],
     },
     {
       id: "hrms",
@@ -67,8 +75,14 @@ function Menu() {
       title: "Nexus HRMS & Automated Payroll",
       category: "enterprise",
       highlight: "Live Shift Terminal",
-      description: "Complete workforce management, live daily attendance shift simulator, leave approval portal, and instant 1-click printable A4 pay slips with PF/PT breakdown.",
-      features: ["Shift Punch Terminal", "Department Roster", "Leave Approval Workflow", "Printable A4 Pay Slips"],
+      description:
+        "Complete workforce management, live daily attendance shift simulator, leave approval portal, and instant 1-click printable A4 pay slips with PF/PT breakdown.",
+      features: [
+        "Shift Punch Terminal",
+        "Department Roster",
+        "Leave Approval Workflow",
+        "Printable A4 Pay Slips",
+      ],
     },
     {
       id: "bill",
@@ -79,8 +93,14 @@ function Menu() {
       title: "Invoicing, Quotations & Cash Book",
       category: "enterprise",
       highlight: "GST/VAT & Saved Registry",
-      description: "Full-featured professional billing with saved document records, custom brand letterheads, UPI scan-to-pay QR, cash book ledger, and PDF/Excel export.",
-      features: ["Saved Invoices Registry", "GST / VAT & Tax Rules", "UPI Scan-to-Pay QR", "Cash Book Statement & Excel"],
+      description:
+        "Full-featured professional billing with saved document records, custom brand letterheads, UPI scan-to-pay QR, cash book ledger, and PDF/Excel export.",
+      features: [
+        "Saved Invoices Registry",
+        "GST / VAT & Tax Rules",
+        "UPI Scan-to-Pay QR",
+        "Cash Book Statement & Excel",
+      ],
     },
     {
       id: "dine",
@@ -91,8 +111,14 @@ function Menu() {
       title: "Restaurant Tabletop QR Ordering",
       category: "commerce",
       highlight: "Live Kitchen Screen",
-      description: "Guests scan table QR codes to browse the digital menu and place orders. Kitchen terminal receives and advances tickets live without server delays.",
-      features: ["QR per Table Generator", "Live Chef Kitchen Sync", "Real-time Order Tracker", "Zero Food Commission"],
+      description:
+        "Guests scan table QR codes to browse the digital menu and place orders. Kitchen terminal receives and advances tickets live without server delays.",
+      features: [
+        "QR per Table Generator",
+        "Live Chef Kitchen Sync",
+        "Real-time Order Tracker",
+        "Zero Food Commission",
+      ],
     },
     {
       id: "shop",
@@ -103,8 +129,14 @@ function Menu() {
       title: "E-Commerce WhatsApp Storefront",
       category: "commerce",
       highlight: "Instant Cart Checkout",
-      description: "High-converting online store with dynamic product cart, discount sale badges, category filtering, and direct-to-WhatsApp order dispatch.",
-      features: ["Interactive Cart Drawer", "Offer Badges & Discounts", "1-Tap WhatsApp Checkout", "Customer Delivery Capture"],
+      description:
+        "High-converting online store with dynamic product cart, discount sale badges, category filtering, and direct-to-WhatsApp order dispatch.",
+      features: [
+        "Interactive Cart Drawer",
+        "Offer Badges & Discounts",
+        "1-Tap WhatsApp Checkout",
+        "Customer Delivery Capture",
+      ],
     },
     {
       id: "cars",
@@ -115,8 +147,14 @@ function Menu() {
       title: "Prestige Used Car Showroom",
       category: "showcase",
       highlight: "Interactive EMI Calculator",
-      description: "Digital vehicle inventory with multi-photo galleries, 150-point inspection badges, instant loan EMI calculator, and test drive booking.",
-      features: ["150-Point Inspection Badges", "Real-time EMI Calculator", "Test Drive Booking Link", "Vehicle Trade-in Form"],
+      description:
+        "Digital vehicle inventory with multi-photo galleries, 150-point inspection badges, instant loan EMI calculator, and test drive booking.",
+      features: [
+        "150-Point Inspection Badges",
+        "Real-time EMI Calculator",
+        "Test Drive Booking Link",
+        "Vehicle Trade-in Form",
+      ],
     },
     {
       id: "estate",
@@ -127,8 +165,14 @@ function Menu() {
       title: "Elite Real Estate Portal",
       category: "showcase",
       highlight: "VIP Site Visit Booking",
-      description: "Showcase residential & commercial properties with photo sliders, floor specifications, neighborhood maps, and VIP site visit requests.",
-      features: ["Buy & Rent Listings", "Mortgage & EMI Estimator", "VIP Site Visit Scheduler", "Agent WhatsApp Connect"],
+      description:
+        "Showcase residential & commercial properties with photo sliders, floor specifications, neighborhood maps, and VIP site visit requests.",
+      features: [
+        "Buy & Rent Listings",
+        "Mortgage & EMI Estimator",
+        "VIP Site Visit Scheduler",
+        "Agent WhatsApp Connect",
+      ],
     },
     {
       id: "site",
@@ -139,8 +183,32 @@ function Menu() {
       title: "Brand Website & Appointment Booking",
       category: "showcase",
       highlight: "High-End Visual Portfolio",
-      description: "World-class booking website for boutique studios, salons, clinics, and interior decorators with photo showcases, client reviews, and Google Maps.",
-      features: ["High-Res Photo Gallery", "Step-by-Step How It Works", "Client Testimonial Strip", "Embedded Google Maps"],
+      description:
+        "World-class booking website for boutique studios, salons, clinics, and interior decorators with photo showcases, client reviews, and Google Maps.",
+      features: [
+        "High-Res Photo Gallery",
+        "Step-by-Step How It Works",
+        "Client Testimonial Strip",
+        "Embedded Google Maps",
+      ],
+    },
+    {
+      id: "proposal",
+      href: "/proposal",
+      icon: "💍",
+      badge: "Romance Studio",
+      badgeColor: "border-rose-500/30 bg-rose-500/10 text-rose-300",
+      title: "Proposal Website Studio",
+      category: "showcase",
+      highlight: "5 Premium Themes",
+      description:
+        "Create a private, animated proposal website with a love story, photo and a 'Yes' button that celebrates. Send a link and delete it anytime.",
+      features: [
+        "5 Cinematic Themes",
+        "Private Shareable Link",
+        "Runaway 'No' Button",
+        "WhatsApp Reply on YES",
+      ],
     },
     {
       id: "msg",
@@ -151,8 +219,14 @@ function Menu() {
       title: "Client Acquisition & Pitch Maker",
       category: "enterprise",
       highlight: "English · Hindi · Kannada",
-      description: "Automate customized, persuasive WhatsApp and Instagram pitch messages for local business owners with one-tap link embedding.",
-      features: ["Multilingual Templates", "Customer Link Generator", "Follow-up Cadence (Day 1, 3)", "Deal Status Tracking"],
+      description:
+        "Automate customized, persuasive WhatsApp and Instagram pitch messages for local business owners with one-tap link embedding.",
+      features: [
+        "Multilingual Templates",
+        "Customer Link Generator",
+        "Follow-up Cadence (Day 1, 3)",
+        "Deal Status Tracking",
+      ],
     },
   ];
 
@@ -180,13 +254,18 @@ function Menu() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-extrabold tracking-tight text-white text-base">
-                  APEX SUITE <span className="text-amber-400 font-serif italic text-sm">Enterprise</span>
+                  APEX SUITE{" "}
+                  <span className="text-amber-400 font-serif italic text-sm">
+                    Enterprise
+                  </span>
                 </span>
                 <span className="hidden sm:inline-block rounded-full bg-amber-400/10 border border-amber-400/30 px-2 py-0.5 text-[10px] font-bold text-amber-300">
                   v2.5 Pro
                 </span>
               </div>
-              <div className="text-[11px] text-slate-400">Digital Platforms for Elite Businesses</div>
+              <div className="text-[11px] text-slate-400">
+                Digital Platforms for Elite Businesses
+              </div>
             </div>
           </div>
 
@@ -219,7 +298,9 @@ function Menu() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base sm:text-lg text-slate-300 leading-relaxed font-light">
-            CRM pipelines, automated HRMS payroll, GST billing engines, contactless restaurant QR ordering & boutique showcases — customized with your logo, colors, and currency.
+            CRM pipelines, automated HRMS payroll, GST billing engines,
+            contactless restaurant QR ordering & boutique showcases — customized
+            with your logo, colors, and currency.
           </p>
 
           {/* Quick CTA row */}
@@ -244,19 +325,31 @@ function Menu() {
           <div className="mx-auto mt-12 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4 text-center">
             <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm">
               <div className="text-xl font-black text-amber-400">48 Hours</div>
-              <div className="text-[11px] text-slate-400 mt-0.5">Live On Your Domain</div>
+              <div className="text-[11px] text-slate-400 mt-0.5">
+                Live On Your Domain
+              </div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm">
-              <div className="text-xl font-black text-emerald-400">0% Commission</div>
-              <div className="text-[11px] text-slate-400 mt-0.5">Keep 100% Profits</div>
+              <div className="text-xl font-black text-emerald-400">
+                0% Commission
+              </div>
+              <div className="text-[11px] text-slate-400 mt-0.5">
+                Keep 100% Profits
+              </div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm">
-              <div className="text-xl font-black text-indigo-400">GST / VAT</div>
-              <div className="text-[11px] text-slate-400 mt-0.5">Compliant Invoicing</div>
+              <div className="text-xl font-black text-indigo-400">
+                GST / VAT
+              </div>
+              <div className="text-[11px] text-slate-400 mt-0.5">
+                Compliant Invoicing
+              </div>
             </div>
             <div className="rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-sm">
               <div className="text-xl font-black text-cyan-400">Mobile PWA</div>
-              <div className="text-[11px] text-slate-400 mt-0.5">Works On Any Device</div>
+              <div className="text-[11px] text-slate-400 mt-0.5">
+                Works On Any Device
+              </div>
             </div>
           </div>
         </div>
@@ -267,7 +360,10 @@ function Menu() {
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
           <div>
             <h2 className="text-xl font-black uppercase tracking-wider text-white">
-              Executive Demo Suite <span className="text-amber-400 font-serif italic text-base">({apps.length} Applications)</span>
+              Executive Demo Suite{" "}
+              <span className="text-amber-400 font-serif italic text-base">
+                ({apps.length} Applications)
+              </span>
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
               Select any demo below to experience the live client environment.
@@ -314,13 +410,17 @@ function Menu() {
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-3xl shadow-md group-hover:scale-110 group-hover:bg-white/10 transition-transform">
                     {app.icon}
                   </div>
-                  <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${app.badgeColor}`}>
+                  <span
+                    className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${app.badgeColor}`}
+                  >
                     {app.badge}
                   </span>
                 </div>
 
                 <div className="mt-4">
-                  <div className="text-[11px] font-bold text-amber-400 uppercase tracking-widest">{app.highlight}</div>
+                  <div className="text-[11px] font-bold text-amber-400 uppercase tracking-widest">
+                    {app.highlight}
+                  </div>
                   <h3 className="mt-1 text-xl font-black text-white group-hover:text-amber-300 transition-colors">
                     {app.title}
                   </h3>
@@ -332,8 +432,13 @@ function Menu() {
                 {/* Features list */}
                 <div className="mt-5 space-y-1.5 border-t border-white/5 pt-4">
                   {app.features.map((feat, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-slate-400">
-                      <span className="text-amber-400 text-xs font-bold">✓</span>
+                    <div
+                      key={i}
+                      className="flex items-center gap-2 text-xs text-slate-400"
+                    >
+                      <span className="text-amber-400 text-xs font-bold">
+                        ✓
+                      </span>
                       <span>{feat}</span>
                     </div>
                   ))}
@@ -360,7 +465,8 @@ function Menu() {
             Ready to deploy this for your brand?
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-slate-300 leading-relaxed font-light">
-            I can tailor and launch any of these systems for your showroom, agency, restaurant, or service business within 48 hours.
+            I can tailor and launch any of these systems for your showroom,
+            agency, restaurant, or service business within 48 hours.
           </p>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <a
@@ -388,7 +494,8 @@ function Menu() {
             Apex Enterprise Suite · Developed by {OWNER.name}
           </div>
           <div className="mt-1">
-            Secure · No Monthly Commission · Multi-Currency · Full Source Code Ownership Available
+            Secure · No Monthly Commission · Multi-Currency · Full Source Code
+            Ownership Available
           </div>
         </div>
       </footer>
@@ -438,6 +545,7 @@ function Root() {
       cars: Cars,
       estate: Estate,
       msg: Messages,
+      proposal: Proposal,
     }[which] || Menu;
   return <Page shared={share?.data} />;
 }
